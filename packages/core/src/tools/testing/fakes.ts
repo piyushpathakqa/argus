@@ -8,9 +8,10 @@ import type {
 } from '../types';
 import type { AnthropicLike } from '../../agent/client';
 
-/** Build a minimal valid Anthropic.Message for tests. */
+/** Build a minimal valid Anthropic.Message for tests. Accepts request-shaped blocks
+ *  (ContentBlockParam) so test literals don't need response-only fields like `citations`. */
 export function makeMessage(
-  content: Anthropic.ContentBlock[],
+  content: Anthropic.ContentBlockParam[],
   stopReason: Anthropic.Message['stop_reason'],
 ): Anthropic.Message {
   return {

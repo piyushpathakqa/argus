@@ -82,7 +82,7 @@ describe('runAgentLoop', () => {
       thinking: true,
       effort: 'high',
     });
-    const body = client.bodies[0] as Record<string, unknown>;
+    const body = client.bodies[0] as unknown as Record<string, unknown>;
     expect(body.thinking).toEqual({ type: 'adaptive' });
     expect(body.output_config).toEqual({ effort: 'high' });
   });
