@@ -1,0 +1,14 @@
+# Argus — Cursor context pointer
+
+This is Argus, an agentic QA framework (Claude authors/generates/triages/self-heals Playwright
+tests; ships as an MCP server + CLI; gated in GitHub Actions).
+
+Before doing anything, read these in order:
+1. AGENTS.md            — fast orientation, conventions, commands
+2. docs/STATUS.md       — current state, what's done, what's next, how to resume
+3. docs/DESIGN.md       — architecture and the rationale behind every decision
+4. docs/ROADMAP.md      — milestones M0–M4 mapped to Linear tickets TRE-22..45
+
+Key conventions: TypeScript + ESM, pnpm workspaces, tsup build, Vitest, ESLint flat config.
+Verify with: pnpm lint && pnpm typecheck && pnpm test && pnpm build. Never claim done without
+running them. Current next task: TRE-30 (the sample-shop Next.js app).
