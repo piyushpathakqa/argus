@@ -6,11 +6,13 @@
 
 1. Read `AGENTS.md`, then this file, then `docs/DESIGN.md`. The design is locked — don't
    re-litigate it; just build the next ticket.
-2. **M1 is complete.** Next milestone: **M2 (`TRE-24`)** — CLI hardening + GitHub Actions gate:
-   `TRE-35` (CLI commands), `TRE-36` (Actions: build sample-shop + run Playwright as a required
-   gate), `TRE-37` (artifact pipeline → trace/screenshots/logs for Triage). The `AgentObserver`
-   seam (TRE-32) and `PlaywrightTestRunner` are the hooks TRE-37 builds on.
-3. M1 order (all done): ~~`TRE-30`~~ → ~~`TRE-31`~~ → ~~`TRE-32`~~ → ~~`TRE-33`~~ → ~~`TRE-34`~~.
+2. **M1 and M2 are complete.** Next milestone: **M3 (`TRE-25`)** — the self-healing showcase:
+   `TRE-38` (Triage: classify a failure as real-bug / DOM-drift / flake from the uploaded trace),
+   `TRE-39` (Heal: rewrite the locator, verify green, open a PR), `TRE-40` (seeded drift + a
+   real-bug negative case), `TRE-41` (CI wiring: on-failure triage → conditional heal-PR job).
+   Triage reads the artifacts the `QA Gate` (M2) already uploads.
+3. Done: M1 (~~TRE-30–34~~) and M2 (~~TRE-35/36/37~~). `argus generate` is real; the `QA Gate`
+   workflow runs generated specs against sample-shop on every push.
 4. **Before claiming any task done, run and pass:**
    ```bash
    pnpm lint && pnpm typecheck && pnpm test && pnpm build
@@ -24,12 +26,12 @@
 
 - **M0 (Foundations) is complete and verified.** The monorepo builds, typechecks, lints, and
   tests green. The `argus` CLI runs with placeholder commands.
-- **M1 is COMPLETE (`TRE-30`–`TRE-34`) and verified.** sample-shop + Tool Registry + hand-rolled
-  `runAgentLoop` + real Playwright runtime + the **Generate behavior** with a tuned prompt and a
-  cleaned (`trimHtml`) DOM snapshot. `argus generate <url> --run [--base-url …]` explores **any**
-  app and writes + runs a green Playwright spec. Core suite: **47 passing tests** (incl. 4
-  real-chromium). Pushed to GitHub; CI green.
-- **Next milestone: M2** — CLI + GitHub Actions deployment gate (`TRE-35/36/37`).
+- **M1 + M2 COMPLETE and verified.** M1: `argus generate <url> --run [--base-url …]` explores any
+  app and writes + runs a green Playwright spec (Tool Registry + agent loop + real Playwright
+  runtime + Generate behavior). M2: the **`QA Gate`** GitHub Actions check
+  (`.github/workflows/qa.yml`) runs the agent-generated specs against sample-shop on every push —
+  **green** — and uploads trace/screenshots on failure. Core suite: **47 passing tests**.
+- **Next milestone: M3 (`TRE-25`)** — Triage + self-healing PRs (the differentiator).
 - **Pushed to GitHub** (2026-06-12): `main` tracks `origin/main`, CI runs on push. No blocking chores.
 
 ## What exists right now
@@ -202,6 +204,24 @@ committed as a demo artifact (excluded from lint; not run by CI).
 `tests/generated/login.spec.ts` was written by `argus generate … --model claude-haiku-4-5` (4
 steps, ~$0.03) and passes against sample-shop (`2 passed, 0 failed`). It logs in with discovered
 `demo`/`demo` creds and asserts via `getByTestId` — a tangible "AI wrote my test" artifact.
+
+## Done: M2 — CI/CD gate (`TRE-35/36/37`)
+
+Spec: `docs/superpowers/specs/2026-06-12-ci-gate-design.md`.
+- **`.github/workflows/qa.yml`** — the **QA Gate** check: installs chromium, serves sample-shop
+  (via the playwright `webServer`), and runs the committed agent-generated specs on every push/PR.
+  **Green** on GitHub. A failing spec turns the check red — that's the visible "tests block
+  deployment" gate.
+- **`playwright.config.ts`** captures `trace`/`screenshot`/`video` on failure and the workflow
+  uploads `playwright-report/` + `test-results/` (14-day retention) — the artifacts M3 Triage reads.
+- TRE-35 satisfied: the `commander` CLI surface is live (`generate`/`smoke` real; `triage`/`heal`
+  are M3 placeholders).
+
+Notes: the gate runs **committed** specs (deterministic, no API key/spend in CI — the agent is a
+dev-time tool). To make it a **required** check, enable branch protection for `main` in the repo
+settings (intentionally not enforced via code, since that would block direct-to-`main` pushes).
+A GitHub annotation flags Node-20 actions as deprecating — it self-resolves when GitHub forces
+Node 24 on 2026-06-16.
 
 ## Process notes
 - Design is locked in `docs/DESIGN.md`. Tickets in Linear mirror `docs/ROADMAP.md`.

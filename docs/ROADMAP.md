@@ -27,15 +27,19 @@ The agent core + a controllable target app + autonomous test generation.
 | `TRE-34` | Prompt & context engineering for Generate (system prompt + DOM snapshot) | ✅ |
 
 **M1 complete** ✅ — Argus writes runnable Playwright specs from a URL (`argus generate <url> --run`),
-on any app (`--base-url`). Next milestone: **M2 (`TRE-24`)** — CLI + GitHub Actions gate.
+on any app (`--base-url`).
 
-## M2 — CLI + GitHub Actions gate · `TRE-24` (CI/CD story)
+## M2 — CLI + GitHub Actions gate · `TRE-24` ✅ (CI/CD story)
 
 | Ticket | Title | Status |
 |--------|-------|--------|
-| `TRE-35` | @argus/cli: commander-based author/generate/triage/heal commands | ⬜ (surface scaffolded in M0) |
-| `TRE-36` | GitHub Actions: build sample-shop + run Playwright as a required gate | ⬜ |
-| `TRE-37` | Artifact pipeline: capture & upload trace/screenshots/logs for triage | ⬜ |
+| `TRE-35` | @argus/cli: commander-based author/generate/triage/heal commands | ✅ (surface live; `generate`/`smoke` real, `triage`/`heal` placeholders for M3) |
+| `TRE-36` | GitHub Actions: run agent-generated Playwright specs as a gate | ✅ (`.github/workflows/qa.yml`, green) |
+| `TRE-37` | Artifact pipeline: capture & upload trace/screenshots/logs for triage | ✅ (playwright.config + upload-artifact) |
+
+**M2 complete** ✅ — the `QA Gate` check runs the AI-generated Playwright specs against sample-shop
+on every push/PR (red on failure, with the trace uploaded). Next milestone: **M3 (`TRE-25`)** —
+Triage + self-healing PRs.
 
 ## M3 — Triage + Heal · `TRE-25` (self-healing showcase)
 
