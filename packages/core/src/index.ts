@@ -21,3 +21,5 @@ export function resolveModel(tier: ModelTier = 'primary'): string {
 }
 
 export * from './tools/index';
+export * from './agent/index';
+export * from './runtime/index';
