@@ -20,7 +20,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
+    "@anthropic-ai/sdk": "^0.104.1",
+    "playwright": "^1.60.0",
     "zod": "^4.4.3"
   }
 }
