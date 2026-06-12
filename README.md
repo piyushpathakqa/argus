@@ -52,7 +52,21 @@ cp .env.example .env   # add your ANTHROPIC_API_KEY
 pnpm build
 ```
 
-_CLI / MCP usage docs land with milestones M2 and M4._
+### Watch the agent run (E2E)
+
+The agent loop is live. Point it at the bundled demo app and watch it explore — navigate, snapshot
+the DOM, read `data-testid`s, and click through the login → cart flow:
+
+```bash
+pnpm --filter @argus/core exec playwright install chromium   # one-time
+pnpm --filter @argus/sample-shop dev                          # terminal 1 → http://localhost:3100
+node --env-file=.env packages/cli/dist/index.js smoke http://localhost:3100/login   # terminal 2
+```
+
+It prints a step-by-step trace and a token/cost line (~$0.05–0.15 per run on the fast model).
+Requires a real Anthropic **API** key (a Max subscription doesn't fund the API).
+
+_Full CLI / MCP usage docs land with milestones M2 and M4._
 
 ## Repo layout
 
