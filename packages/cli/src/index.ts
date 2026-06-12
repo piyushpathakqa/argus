@@ -41,6 +41,7 @@ program
   .argument('<url>', 'URL of the app under test')
   .option('--model <id>', 'model id (default: primary/Opus)')
   .option('--run', 'run the generated spec after writing it')
+  .option('--base-url <url>', 'base URL for running the spec (default: origin of <url>)')
   .option('--out <dir>', 'output directory for the spec', 'tests/generated')
   .option('--max-steps <n>', 'max agent steps', '20')
   .description(
@@ -49,7 +50,7 @@ program
   .action(
     async (
       url: string,
-      opts: { model?: string; run?: boolean; out: string; maxSteps: string },
+      opts: { model?: string; run?: boolean; baseUrl?: string; out: string; maxSteps: string },
     ) => {
       const model = opts.model ?? resolveModel('primary');
       const { session, close } = await createPlaywrightSession({ headless: true });
@@ -78,7 +79,11 @@ program
         );
 
         if (opts.run && result.writtenFiles.includes(result.specPath)) {
-          console.log(`\n[argus] running ${result.specPath} …`);
+          // baseURL the generated spec runs against: explicit flag, else the
+          // origin of the target URL — so `--run` works on any app.
+          const baseUrl = opts.baseUrl ?? new URL(url).origin;
+          process.env.ARGUS_BASE_URL = baseUrl;
+          console.log(`\n[argus] running ${result.specPath} against ${baseUrl} …`);
           const tr = await runner.run(result.specPath);
           console.log(`[argus] ${tr.summary} (artifacts: ${tr.artifactsDir})`);
           if (tr.failed > 0) process.exitCode = 1;
