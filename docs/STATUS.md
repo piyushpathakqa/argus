@@ -6,13 +6,13 @@
 
 1. Read `AGENTS.md`, then this file, then `docs/DESIGN.md`. The design is locked — don't
    re-litigate it; just build the next ticket.
-2. **M1 and M2 are complete.** Next milestone: **M3 (`TRE-25`)** — the self-healing showcase:
-   `TRE-38` (Triage: classify a failure as real-bug / DOM-drift / flake from the uploaded trace),
-   `TRE-39` (Heal: rewrite the locator, verify green, open a PR), `TRE-40` (seeded drift + a
-   real-bug negative case), `TRE-41` (CI wiring: on-failure triage → conditional heal-PR job).
-   Triage reads the artifacts the `QA Gate` (M2) already uploads.
-3. Done: M1 (~~TRE-30–34~~) and M2 (~~TRE-35/36/37~~). `argus generate` is real; the `QA Gate`
-   workflow runs generated specs against sample-shop on every push.
+2. **M1, M2 done; M3 in progress — Triage (`TRE-38`) is done.** Next: **`TRE-39` (Heal)** — take a
+   `dom-drift` verdict, rewrite the spec's stale selector to the suggested one, re-run to verify
+   green, and open a PR. ⚠️ Heal opens **real pull requests** — confirm scope/permissions before
+   building. Then `TRE-40` (seeded-drift demo + real-bug negative case) and `TRE-41` (CI wiring:
+   on-failure triage → conditional heal-PR job).
+3. Done: M1 (~~TRE-30–34~~), M2 (~~TRE-35/36/37~~), and M3 ~~TRE-38 (Triage)~~. `argus triage <url>
+   --spec … ` returns a structured `real-bug` / `dom-drift` / `flake` verdict.
 4. **Before claiming any task done, run and pass:**
    ```bash
    pnpm lint && pnpm typecheck && pnpm test && pnpm build
@@ -26,12 +26,13 @@
 
 - **M0 (Foundations) is complete and verified.** The monorepo builds, typechecks, lints, and
   tests green. The `argus` CLI runs with placeholder commands.
-- **M1 + M2 COMPLETE and verified.** M1: `argus generate <url> --run [--base-url …]` explores any
-  app and writes + runs a green Playwright spec (Tool Registry + agent loop + real Playwright
-  runtime + Generate behavior). M2: the **`QA Gate`** GitHub Actions check
-  (`.github/workflows/qa.yml`) runs the agent-generated specs against sample-shop on every push —
-  **green** — and uploads trace/screenshots on failure. Core suite: **47 passing tests**.
-- **Next milestone: M3 (`TRE-25`)** — Triage + self-healing PRs (the differentiator).
+- **M1 + M2 complete; M3 underway.** M1: `argus generate <url> --run` writes + runs a green spec on
+  any app. M2: the **`QA Gate`** workflow runs generated specs against sample-shop on every push
+  (green; uploads trace/screenshots on failure). **M3 so far — Triage (`TRE-38`):** `argus triage
+  <url> --spec …` reads the failing spec, inspects the live DOM, and returns a structured
+  `real-bug` / `dom-drift` / `flake` verdict (with a suggested selector for drift). Core suite:
+  **52 passing tests**.
+- **Next: `TRE-39` (Heal)** — rewrite the drifted locator, verify green, open a PR.
 - **Pushed to GitHub** (2026-06-12): `main` tracks `origin/main`, CI runs on push. No blocking chores.
 
 ## What exists right now
@@ -41,7 +42,7 @@
 pnpm install     # ✓ 292 packages
 pnpm lint        # ✓ eslint clean
 pnpm typecheck   # ✓ tsc --noEmit, all 4 packages
-pnpm test        # ✓ vitest — core 47/47 pass (incl. 4 real-chromium); mcp/cli pass-with-no-tests
+pnpm test        # ✓ vitest — core 52/52 pass (incl. 4 real-chromium); mcp/cli pass-with-no-tests
 pnpm build       # ✓ tsup (core/mcp/cli) + next build (sample-shop: 5 routes + middleware)
 node packages/cli/dist/index.js --help     # ✓ prints command surface (now incl. `smoke`)
 pnpm --filter @argus/sample-shop dev        # ✓ serves login → products → cart on :3100
@@ -222,6 +223,22 @@ dev-time tool). To make it a **required** check, enable branch protection for `m
 settings (intentionally not enforced via code, since that would block direct-to-`main` pushes).
 A GitHub annotation flags Node-20 actions as deprecating — it self-resolves when GitHub forces
 Node 24 on 2026-06-16.
+
+## Done: `TRE-38` (Triage behavior) — M3 part 1
+
+Spec: `docs/superpowers/specs/2026-06-12-triage-behavior-design.md`.
+- **`triage()`** (`behaviors/triage.ts`) — given a failing spec + the app URL (+ error), reads the
+  spec, inspects the **live DOM**, and classifies `real-bug` / `dom-drift` / `flake`. Returns a
+  structured `Verdict` (verdict, confidence, rationale, `suggestedSelector` for drift).
+- **`report_verdict` tool** (`tools/definitions/report.ts`) — the structured-output channel; the
+  behavior captures its call input (registered only for Triage, not in the default registry).
+- **`extractFailures(report)`** (`runtime/playwright-runner.ts`, pure) — pulls failing specs (file
+  + title + error) from a Playwright JSON report, so the CLI can triage straight from a CI run.
+- **`argus triage <url> --spec … [--error …] [--report …]`** — prints the verdict + rationale +
+  suggested selector; exits non-zero on `real-bug` (gate stays blocked), zero on drift/flake.
+
+Next (`TRE-39`, Heal): consume a `dom-drift` verdict's `suggestedSelector`, rewrite the spec,
+re-run to verify green, and open a PR. **Opens real PRs — checkpoint before building.**
 
 ## Process notes
 - Design is locked in `docs/DESIGN.md`. Tickets in Linear mirror `docs/ROADMAP.md`.

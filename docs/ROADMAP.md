@@ -45,8 +45,8 @@ Triage + self-healing PRs.
 
 | Ticket | Title | Status |
 |--------|-------|--------|
-| `TRE-38` | Triage behavior: classify bug vs drift vs flake | ⬜ |
-| `TRE-39` | Heal behavior: rewrite locator, verify green, open a PR | ⬜ |
+| `TRE-38` | Triage behavior: classify bug vs drift vs flake | ✅ |
+| `TRE-39` | Heal behavior: rewrite locator, verify green, open a PR | 🔜 **next** |
 | `TRE-40` | Demo scenario: seeded data-testid drift + a real-bug negative case | ⬜ |
 | `TRE-41` | CI wiring: on-failure triage job → conditional heal-PR job | ⬜ |
 
