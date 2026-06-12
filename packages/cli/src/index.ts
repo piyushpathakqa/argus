@@ -11,9 +11,11 @@ import {
   ConsoleObserver,
   createAnthropicClient,
   createDefaultRegistry,
+  createHealPr,
   createPlaywrightSession,
   extractFailures,
   generate,
+  heal,
   PlaywrightTestRunner,
   resolveModel,
   runAgentLoop,
@@ -182,11 +184,98 @@ program
 
 program
   .command('heal')
-  .argument('<runDir>', 'Path to a triaged drift failure')
-  .description('Rewrite the locator, verify green, and open a PR')
-  .action((runDir: string) => {
-    console.log(`[argus] heal ${runDir} — not implemented yet (M3, TRE-39).`);
-  });
+  .argument('<url>', 'URL of the app under test')
+  .requiredOption('--spec <path>', 'the failing spec file')
+  .option('--error <text>', 'the Playwright failure message')
+  .option('--no-pr', 'leave the verified fix on a local branch; do not push/open a PR')
+  .option('--model <id>', 'model id (default: primary/Opus)')
+  .description(
+    'Triage a failure and, only for DOM drift, rewrite the locator, verify green, and open a PR',
+  )
+  .action(
+    async (
+      url: string,
+      opts: { spec: string; error?: string; pr: boolean; model?: string },
+    ) => {
+      const model = opts.model ?? resolveModel('primary');
+      const { session, close } = await createPlaywrightSession({ headless: true });
+      const runner = new PlaywrightTestRunner({ cwd: process.cwd() });
+      const ctx = { workspaceRoot: process.cwd(), browser: session, runner };
+      try {
+        // 1. Triage — Heal only ever runs on dom-drift.
+        const t = await triage({
+          client: createAnthropicClient(),
+          specPath: opts.spec,
+          url,
+          errorText: opts.error,
+          ctx,
+          model,
+          observer: new ConsoleObserver(),
+        });
+        const v = t.verdict;
+        console.log(`\n[argus] verdict: ${v ? `${v.verdict} (${v.confidence})` : 'none'}`);
+        if (v) console.log(`[argus] rationale: ${v.rationale}`);
+
+        if (!v || v.verdict !== 'dom-drift' || !v.suggestedSelector) {
+          if (v?.verdict === 'real-bug') {
+            console.log('[argus] real bug — refusing to heal; the gate stays blocked.');
+            process.exitCode = 1;
+          } else {
+            console.log('[argus] not a healable DOM drift; nothing to do.');
+          }
+          return;
+        }
+
+        // 2. Heal — rewrite the locator and verify green independently.
+        console.log(`\n[argus] healing drift → ${v.suggestedSelector}`);
+        const h = await heal({
+          client: createAnthropicClient(),
+          specPath: opts.spec,
+          url,
+          suggestedSelector: v.suggestedSelector,
+          ctx,
+          model,
+          observer: new ConsoleObserver(),
+        });
+        if (!h.verified || h.changedFiles.length === 0) {
+          console.log('[argus] could not produce a verified green fix; no PR opened.');
+          process.exitCode = 1;
+          return;
+        }
+        console.log(`[argus] verified green · changed: ${h.changedFiles.join(', ')}`);
+
+        // 3. Open the PR (unless --no-pr).
+        const slug = (opts.spec.split('/').pop() ?? 'spec').replace(/\.spec\.ts$/, '');
+        const branch = `argus/heal-${slug}-${Date.now().toString(36)}`;
+        if (opts.pr === false) {
+          console.log(`[argus] --no-pr: fix is on disk. Open it with:`);
+          console.log(`  git checkout -b ${branch} && git add ${h.changedFiles.join(' ')} && \\`);
+          console.log(`  git commit -m "Argus: heal DOM drift" && gh pr create --fill`);
+          return;
+        }
+        const title = `Argus: heal DOM drift in ${slug}`;
+        const body = [
+          `Argus triaged a failing Playwright test as **dom-drift** and self-healed it.`,
+          ``,
+          `- **Spec:** \`${opts.spec}\``,
+          `- **New selector:** \`${v.suggestedSelector}\``,
+          `- **Rationale:** ${v.rationale}`,
+          ``,
+          `The fix was verified green by re-running the spec before opening this PR.`,
+        ].join('\n');
+        const pr = await createHealPr({
+          cwd: process.cwd(),
+          branch,
+          files: h.changedFiles,
+          title,
+          body,
+        });
+        console.log(`\n[argus] opened PR: ${pr.url}`);
+      } finally {
+        await close();
+      }
+    },
+  );
 
 program
   .command('smoke')
