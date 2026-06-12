@@ -1,0 +1,8 @@
+{
+  "name": "@argus/sample-shop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Placeholder for the Next.js demo target app (login + products + cart). Built in M1 (TRE-30).",
+  "type": "module",
+  "license": "MIT"
+}

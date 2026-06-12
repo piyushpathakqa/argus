@@ -1,0 +1,21 @@
+{
+  "name": "@argus/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Argus MCP server: exposes the Tool Registry + behaviors over MCP.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "argus-mcp": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@argus/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}

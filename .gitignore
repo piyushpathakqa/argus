@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Next.js
+apps/sample-shop/.next/
+apps/sample-shop/out/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+.cache/
+
+# Argus run artifacts
+.argus/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

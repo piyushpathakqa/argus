@@ -1,0 +1,21 @@
+{
+  "name": "@argus/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Argus CLI: argus author|generate|triage|heal.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "argus": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@argus/core": "workspace:*",
+    "commander": "^13.0.0"
+  }
+}
