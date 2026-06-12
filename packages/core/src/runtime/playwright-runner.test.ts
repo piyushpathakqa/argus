@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parsePlaywrightJson, PlaywrightTestRunner } from './playwright-runner';
+import { extractFailures, parsePlaywrightJson, PlaywrightTestRunner } from './playwright-runner';
 
 describe('parsePlaywrightJson', () => {
   it('maps expected→passed and unexpected→failed', () => {
@@ -60,5 +60,53 @@ describe('PlaywrightTestRunner', () => {
     const runner = new PlaywrightTestRunner({ cwd: '/ws', exec: fakeExec });
     const result = await runner.run();
     expect(result.summary).toBe('0 passed, 0 failed');
+  });
+});
+
+describe('extractFailures', () => {
+  const report = {
+    suites: [
+      {
+        specs: [
+          {
+            file: 'tests/generated/login.spec.ts',
+            title: 'logs in',
+            tests: [{ results: [{ status: 'passed' }] }],
+          },
+        ],
+        suites: [
+          {
+            specs: [
+              {
+                file: 'tests/generated/cart.spec.ts',
+                title: 'adds to cart',
+                tests: [
+                  {
+                    results: [
+                      { status: 'failed', error: { message: 'locator not found: add-to-cart' } },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  it('returns only failing specs, recursing nested suites', () => {
+    const failures = extractFailures(report);
+    expect(failures).toEqual([
+      {
+        specPath: 'tests/generated/cart.spec.ts',
+        title: 'adds to cart',
+        error: 'locator not found: add-to-cart',
+      },
+    ]);
+  });
+
+  it('returns [] for an empty report', () => {
+    expect(extractFailures({})).toEqual([]);
   });
 });

@@ -1,5 +1,5 @@
 export { PlaywrightBrowserSession, createPlaywrightSession } from './playwright-session';
 export type { PlaywrightSessionHandle } from './playwright-session';
-export { PlaywrightTestRunner, parsePlaywrightJson } from './playwright-runner';
-export type { Exec, ExecResult, PlaywrightJsonReport } from './playwright-runner';
+export { PlaywrightTestRunner, parsePlaywrightJson, extractFailures } from './playwright-runner';
+export type { Exec, ExecResult, PlaywrightJsonReport, PlaywrightFailure } from './playwright-runner';
 export { trimHtml } from './html';

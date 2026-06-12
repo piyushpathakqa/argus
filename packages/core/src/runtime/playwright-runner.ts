@@ -8,8 +8,51 @@ export interface PlaywrightStats {
   skipped?: number;
 }
 
+export interface PlaywrightTestResult {
+  status?: string;
+  error?: { message?: string };
+}
+export interface PlaywrightSpec {
+  file?: string;
+  title?: string;
+  tests?: { results?: PlaywrightTestResult[] }[];
+}
+export interface PlaywrightSuite {
+  specs?: PlaywrightSpec[];
+  suites?: PlaywrightSuite[];
+}
 export interface PlaywrightJsonReport {
   stats?: PlaywrightStats;
+  suites?: PlaywrightSuite[];
+}
+
+export interface PlaywrightFailure {
+  specPath: string;
+  title: string;
+  error: string;
+}
+
+const PASSING = new Set(['passed', 'expected', 'skipped']);
+
+/** Walk a Playwright JSON report's nested suites and return every failing spec. Pure. */
+export function extractFailures(report: PlaywrightJsonReport): PlaywrightFailure[] {
+  const out: PlaywrightFailure[] = [];
+  const visit = (suite: PlaywrightSuite): void => {
+    for (const spec of suite.specs ?? []) {
+      const results = (spec.tests ?? []).flatMap((t) => t.results ?? []);
+      const failed = results.find((r) => !PASSING.has(r.status ?? ''));
+      if (failed) {
+        out.push({
+          specPath: spec.file ?? '',
+          title: spec.title ?? '',
+          error: failed.error?.message ?? 'unknown failure',
+        });
+      }
+    }
+    for (const child of suite.suites ?? []) visit(child);
+  };
+  for (const suite of report.suites ?? []) visit(suite);
+  return out;
 }
 
 /** Turn Playwright's `--reporter=json` output into a TestRunResult. Pure. */
