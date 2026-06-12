@@ -55,7 +55,7 @@ pnpm --filter @argus/sample-shop dev        # ✓ serves login → products → 
 |---------|-------|-------|
 | `@argus/core` | **M1 complete (`TRE-31`–`TRE-34`)** | Tool Registry (10 Zod tools) + hand-rolled `runAgentLoop` + `AgentObserver`/`ConsoleObserver` + real `PlaywrightBrowserSession`/`PlaywrightTestRunner` + `trimHtml` cleaned snapshots + the **`generate()` behavior** (tuned prompt, deterministic path, `fs_write` capture). `@anthropic-ai/sdk@^0.104.1` + `playwright@^1.60.0`. Triage/Heal land in M3. |
 | `@argus/mcp` | stub | `describeServer()` placeholder. Real stdio MCP server = `TRE-42` (M4). |
-| `@argus/cli` | **`generate` + `smoke` live** | `argus generate <url> [--run]` writes a runnable spec (and runs it); `argus smoke <url>` watches the loop. `author/triage/heal` are still placeholders (M3). |
+| `@argus/cli` | **generate/triage/heal + smoke live** | `argus generate <url> [--run]` writes+runs a spec; `argus triage <url> --spec …` classifies a failure; `argus heal <url> --spec …` self-heals DOM drift → PR; `argus smoke <url>` watches the loop. Only `author` remains a placeholder. |
 | `@argus/sample-shop` | **built (`TRE-30`)** | Next.js App Router app: `/login` (server-action gate, demo/demo) → `/products` (static Server Component catalog) → `/cart` (client context, live badge). `src/middleware.ts` enforces the gate. In-memory state, no DB. Stable `data-testid`s documented in its README — the contract M3 drifts for the self-heal demo. Runs on port 3100. |
 
 ### Tooling in place
