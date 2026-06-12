@@ -1,3 +1,4 @@
+import type Anthropic from '@anthropic-ai/sdk';
 import type {
   BrowserSession,
   DomMatch,
@@ -5,6 +6,43 @@ import type {
   TestRunner,
   ToolContext,
 } from '../types';
+import type { AnthropicLike } from '../../agent/client';
+
+/** Build a minimal valid Anthropic.Message for tests. */
+export function makeMessage(
+  content: Anthropic.ContentBlock[],
+  stopReason: Anthropic.Message['stop_reason'],
+): Anthropic.Message {
+  return {
+    id: 'msg_test',
+    type: 'message',
+    role: 'assistant',
+    model: 'claude-opus-4-8',
+    content,
+    stop_reason: stopReason,
+    stop_sequence: null,
+    usage: {
+      input_tokens: 10,
+      output_tokens: 5,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 0,
+    },
+  } as unknown as Anthropic.Message;
+}
+
+/** Returns queued messages in order; records the request bodies it received. */
+export class FakeAnthropicClient implements AnthropicLike {
+  bodies: Anthropic.MessageCreateParamsNonStreaming[] = [];
+  constructor(private queue: Anthropic.Message[]) {}
+  messages = {
+    create: async (body: Anthropic.MessageCreateParamsNonStreaming) => {
+      this.bodies.push(body);
+      const next = this.queue.shift();
+      if (!next) throw new Error('FakeAnthropicClient: queue exhausted');
+      return next;
+    },
+  };
+}
 
 /** Records calls and returns canned data. For unit tests only. */
 export class FakeBrowserSession implements BrowserSession {
