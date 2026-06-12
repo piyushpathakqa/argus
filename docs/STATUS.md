@@ -31,8 +31,7 @@
   AND runs it green. Core suite: **43 passing tests** (incl. 4 real-chromium). Only `TRE-34`
   (prompt/context tuning) remains in M1.
 - **Next task: `TRE-34`** — tune the Generate system prompt + DOM context.
-- **One open chore:** pushing to GitHub is blocked on adding the `workflow` OAuth scope to the
-  `gh` CLI (see [Open chores](#open-chores)). The repo exists; the commit is local.
+- **Pushed to GitHub** (2026-06-12): `main` tracks `origin/main`, CI runs on push. No blocking chores.
 
 ## What exists right now
 
@@ -69,18 +68,13 @@ pnpm --filter @argus/sample-shop dev        # ✓ serves login → products → 
 ### Git
 - Local repo initialized, branch `main`, one commit:
   `M0: scaffold pnpm/TypeScript monorepo (TRE-27, TRE-28, TRE-29)`.
-- Remote `origin` → `https://github.com/piyushpathakqa/argus.git` (repo created, **not yet pushed**).
+- Remote `origin` → `https://github.com/piyushpathakqa/argus.git` — **pushed** (2026-06-12), `main`
+  tracks `origin/main`. GitHub Actions CI runs on push.
 
 ## Open chores
 
-### 1. Push to GitHub (blocked on OAuth scope)
-The `gh` token lacks the `workflow` scope, so GitHub refuses to push `.github/workflows/ci.yml`.
-**Fix (interactive — run in a terminal):**
-```bash
-gh auth refresh -h github.com -s workflow   # complete the browser/device authorization fully
-git push -u origin main
-```
-Until then, all work is safe locally; nothing is lost.
+_None blocking._ (The earlier GitHub-push chore is resolved: the `gh` token was refreshed with the
+`workflow` scope and `main` is pushed. Pushing now works over HTTPS via the `gh` credential helper.)
 
 ## Environment setup (for a fresh machine / Cursor)
 ```bash
