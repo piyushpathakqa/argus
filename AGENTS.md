@@ -54,10 +54,11 @@ node packages/cli/dist/index.js --help   # run the CLI after build
 ## Work tracking
 
 Tracked in **Linear** (team "Trek baba", key `TRE`), project "Argus — Agentic QA Framework".
-Milestones are epics TRE-22 (M0) → TRE-26 (M4); tasks are TRE-27..45. See `docs/ROADMAP.md`.
+Milestones are epics TRE-22 (M0) → TRE-26 (M4); tasks are TRE-27..46. See `docs/ROADMAP.md`.
 
 ## Current status (short version)
 
-**M0 (Foundations) is done and verified.** Next up: **M1 — TRE-30**, the `sample-shop` Next.js
-app. See `docs/STATUS.md` for the full picture, including the one open chore (pushing to GitHub
-needs a `workflow` OAuth scope).
+**M0 done. M1 in progress:** `TRE-30` (sample-shop app) and `TRE-31` (shared Tool Registry in
+`@argus/core`) are done and verified. **Next up: `TRE-32`** — the Claude agent loop. See
+`docs/STATUS.md` for the full picture, including the one open chore (pushing to GitHub needs a
+`workflow` OAuth scope).
