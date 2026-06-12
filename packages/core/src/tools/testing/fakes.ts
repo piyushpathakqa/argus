@@ -33,10 +33,13 @@ export function makeMessage(
 /** Returns queued messages in order; records the request bodies it received. */
 export class FakeAnthropicClient implements AnthropicLike {
   bodies: Anthropic.MessageCreateParamsNonStreaming[] = [];
+  /** Message-array length captured at each call time (the live array is mutated in place). */
+  messageCounts: number[] = [];
   constructor(private queue: Anthropic.Message[]) {}
   messages = {
     create: async (body: Anthropic.MessageCreateParamsNonStreaming) => {
       this.bodies.push(body);
+      this.messageCounts.push(Array.isArray(body.messages) ? body.messages.length : 0);
       const next = this.queue.shift();
       if (!next) throw new Error('FakeAnthropicClient: queue exhausted');
       return next;
