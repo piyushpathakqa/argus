@@ -11,6 +11,7 @@ import {
   createAnthropicClient,
   createDefaultRegistry,
   createPlaywrightSession,
+  generate,
   PlaywrightTestRunner,
   resolveModel,
   runAgentLoop,
@@ -38,11 +39,57 @@ program
 program
   .command('generate')
   .argument('<url>', 'URL of the app under test')
-  .description('Explore the app and write Playwright specs')
-  .action((url: string) => {
-    console.log(`[argus] generate ${url} — not implemented yet (M1, TRE-33).`);
-    console.log(`[argus] would use model: ${resolveModel('primary')}`);
-  });
+  .option('--model <id>', 'model id (default: primary/Opus)')
+  .option('--run', 'run the generated spec after writing it')
+  .option('--out <dir>', 'output directory for the spec', 'tests/generated')
+  .option('--max-steps <n>', 'max agent steps', '20')
+  .description(
+    'Explore the app and write a runnable Playwright spec (needs ANTHROPIC_API_KEY + chromium)',
+  )
+  .action(
+    async (
+      url: string,
+      opts: { model?: string; run?: boolean; out: string; maxSteps: string },
+    ) => {
+      const model = opts.model ?? resolveModel('primary');
+      const { session, close } = await createPlaywrightSession({ headless: true });
+      const runner = new PlaywrightTestRunner({ cwd: process.cwd() });
+      try {
+        const result = await generate({
+          client: createAnthropicClient(),
+          url,
+          registry: createDefaultRegistry(),
+          ctx: { workspaceRoot: process.cwd(), browser: session, runner },
+          model,
+          outDir: opts.out,
+          maxSteps: Number(opts.maxSteps),
+          observer: new ConsoleObserver(),
+        });
+
+        console.log(
+          '\n[argus] wrote: ' + (result.writtenFiles.join(', ') || '(no file written)'),
+        );
+        const price = PRICES[model];
+        const cost = price
+          ? `$${((result.run.usage.inputTokens / 1e6) * price.in + (result.run.usage.outputTokens / 1e6) * price.out).toFixed(4)}`
+          : 'n/a';
+        console.log(
+          `[argus] ${result.run.steps} steps · ${result.run.usage.inputTokens} in / ${result.run.usage.outputTokens} out · ~${cost} (${model})`,
+        );
+
+        if (opts.run && result.writtenFiles.includes(result.specPath)) {
+          console.log(`\n[argus] running ${result.specPath} …`);
+          const tr = await runner.run(result.specPath);
+          console.log(`[argus] ${tr.summary} (artifacts: ${tr.artifactsDir})`);
+          if (tr.failed > 0) process.exitCode = 1;
+        } else if (opts.run) {
+          console.log('[argus] --run skipped: no spec file was written');
+        }
+      } finally {
+        await close();
+      }
+    },
+  );
 
 program
   .command('author')
