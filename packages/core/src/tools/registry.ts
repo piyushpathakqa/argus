@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import type {
   AnthropicToolParam,
   McpToolParam,
@@ -43,12 +44,23 @@ export class ToolRegistry {
     }
   }
 
-  // Adapters land in Task 4.
   toAnthropic(): AnthropicToolParam[] {
-    throw new Error('not implemented');
+    return this.list().map((def) => {
+      const schema = z.toJSONSchema(def.input) as Record<string, unknown>;
+      delete schema.$schema;
+      return {
+        name: def.name,
+        description: def.description,
+        input_schema: schema as AnthropicToolParam['input_schema'],
+      };
+    });
   }
 
   toMcp(): McpToolParam[] {
-    throw new Error('not implemented');
+    return this.list().map((def) => ({
+      name: def.name,
+      description: def.description,
+      inputSchema: def.input.shape,
+    }));
   }
 }
