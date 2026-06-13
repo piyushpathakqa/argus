@@ -104,10 +104,11 @@ node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/lo
 
 `@argus/mcp` exposes the QA tools over MCP. Setup + config snippets: [`docs/MCP.md`](./docs/MCP.md).
 
-### Provenance receipts (optional)
+### Provenance receipts
 
-Wrap a self-heal in a signed, verifiable [Treeship](https://www.treeship.dev) receipt — *self-healing
-QA you can audit*. Zero Argus dependency; see [`docs/TREESHIP.md`](./docs/TREESHIP.md).
+When the [Treeship](https://www.treeship.dev) CLI is installed, **every `argus heal` run is sealed
+into a signed, offline-verifiable receipt automatically** — *self-healing QA you can audit*. No hard
+dependency; `--no-receipt` to opt out. See [`docs/TREESHIP.md`](./docs/TREESHIP.md).
 
 ## Repo layout
 
