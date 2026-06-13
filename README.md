@@ -119,7 +119,8 @@ argus/
 │  ├─ mcp/    # MCP server wrapping the registry
 │  └─ cli/    # `argus author|generate|triage|heal`
 ├─ apps/
-│  └─ sample-shop/   # Next.js demo target (login + products + cart)
+│  ├─ sample-shop/   # Next.js demo target (login + products + cart)
+│  └─ web/           # landing page (Next 15 · motion · Remotion hero) → Vercel
 └─ tests/     # generated Playwright specs land here
 ```
 

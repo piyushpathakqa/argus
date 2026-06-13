@@ -278,6 +278,20 @@ Spec: `docs/superpowers/specs/2026-06-12-mcp-server-design.md`.
 - **Remaining:** `TRE-45` (demo GIFs — record `argus generate`, the red→green gate, and a self-heal
   PR; **needs a person**).
 
+## Done: landing page (`apps/web`)
+
+Spec: `docs/superpowers/specs/2026-06-13-landing-page-design.md`. Plan:
+`docs/superpowers/plans/2026-06-13-landing-page.md`.
+- **`apps/web`** — a standalone Next 15 / React 19 App Router app in the workspace, Tailwind v4
+  with the **Sentinel** palette, `motion` (Framer Motion) for scroll/entrance animation, and a
+  **pre-rendered Remotion hero video** (`public/argus-loop.mp4`, 18s, cycling
+  Generate→Gate→Triage→Heal). Sections: Hero · Loop · Architecture · Advantages · Provenance ·
+  Footer. Dev: `pnpm --filter @argus/web dev` (→ :3200). Re-render the video:
+  `pnpm --filter @argus/web render` (Remotion fetches its own headless Chrome).
+- **Deploy** = a separate Vercel project from this same repo, **Root Directory `apps/web`**
+  (`apps/web/vercel.json` pins framework/build/install). One-time user step (interactive):
+  `cd apps/web && vercel link` (or set Root Directory in the dashboard), then `vercel --prod`.
+
 ## Process notes
 - Design is locked in `docs/DESIGN.md`. Tickets in Linear mirror `docs/ROADMAP.md`.
 - This project was scoped via the brainstorming process; each milestone gets built, verified,
