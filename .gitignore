@@ -37,3 +37,6 @@ pnpm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Superpowers brainstorm scratch
+.superpowers/
