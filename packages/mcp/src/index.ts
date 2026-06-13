@@ -1,10 +1,29 @@
+#!/usr/bin/env node
 /**
- * @argus/mcp — MCP server wrapping the Argus Tool Registry.
+ * @argus/mcp — stdio MCP server exposing the Argus QA tool registry.
  *
- * M0 scaffold only. The real stdio server (TRE-42) lands in M4.
+ * Run via the `argus-mcp` bin (e.g. from a Claude Desktop / Claude Code MCP
+ * config). The client LLM drives the tools; the server holds the live browser.
  */
-import { resolveModel } from '@argus/core';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { createArgusMcpServer } from './server';
+import { createLazyContext } from './context';
 
-export function describeServer(): string {
-  return `argus-mcp (primary model: ${resolveModel('primary')})`;
+async function main(): Promise<void> {
+  const lazy = createLazyContext();
+  const server = createArgusMcpServer({ getContext: lazy.getContext });
+
+  const shutdown = async (): Promise<void> => {
+    await lazy.close();
+    process.exit(0);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+
+  await server.connect(new StdioServerTransport());
 }
+
+main().catch((err: unknown) => {
+  console.error('[argus-mcp] fatal:', err);
+  process.exit(1);
+});
