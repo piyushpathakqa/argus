@@ -58,8 +58,8 @@ server + README/demo polish.
 
 | Ticket | Title | Status |
 |--------|-------|--------|
-| `TRE-42` | @argus/mcp: MCP server exposing the Tool Registry + behaviors | ⬜ (stub in M0) |
-| `TRE-43` | MCP usage docs + Claude Desktop/Code config snippet | ⬜ |
-| `TRE-44` | README polish: architecture diagram, quickstart, "use it on your own app" | ⬜ |
-| `TRE-45` | Record demo GIFs: generate, CI gate red→green, self-heal PR | ⬜ |
-| `TRE-46` | Treeship showcase: optional, decoupled provenance receipts over the loop (zero-dep CLI `wrap`; optional SDK observer behind a flag) | ⬜ |
+| `TRE-42` | @argus/mcp: real stdio MCP server exposing the Tool Registry | ✅ |
+| `TRE-43` | MCP usage docs + Claude Desktop/Code config snippet (`docs/MCP.md`) | ✅ |
+| `TRE-44` | README polish: badges, quickstart, "use it on your own app" (`--base-url`) | ✅ |
+| `TRE-45` | Record demo GIFs: generate, CI gate red→green, self-heal PR | ⬜ (needs a human to record) |
+| `TRE-46` | Treeship showcase: optional, decoupled provenance receipts over the loop | ⬜ (optional) |

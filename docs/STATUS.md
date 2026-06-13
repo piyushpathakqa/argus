@@ -6,13 +6,12 @@
 
 1. Read `AGENTS.md`, then this file, then `docs/DESIGN.md`. The design is locked — don't
    re-litigate it; just build the next ticket.
-2. **M0–M3 are complete.** Next milestone: **M4 (`TRE-26`)** — "others can use it":
-   `TRE-42` (real `@argus/mcp` stdio MCP server exposing the registry + behaviors),
-   `TRE-43` (MCP usage docs + Claude Desktop/Code config), `TRE-44` (README polish + "use it on
-   your own app" — note `--base-url` already shipped), `TRE-45` (demo GIFs). Plus the optional
-   **TRE-46** (Treeship showcase).
-3. Done: M0, M1 (~~TRE-30–34~~), M2 (~~TRE-35/36/37~~), M3 (~~TRE-38/39/40/41~~). To **run** the
-   self-heal demo live, see `docs/DEMO.md` (opens a real PR / costs API — user-run).
+2. **M0–M3 complete; M4 nearly done.** Shipped this sweep: `TRE-42` (real `argus-mcp` stdio
+   server), `TRE-43` (`docs/MCP.md`), `TRE-44` (README polish). **Remaining: `TRE-45`** — record
+   demo GIFs (generate, CI red→green, self-heal PR) — **needs a human to record**; and the
+   **optional `TRE-46`** (Treeship showcase, see [[treeship-showcase]] memory / the Linear ticket).
+3. Done: M0, M1 (~~TRE-30–34~~), M2 (~~TRE-35/36/37~~), M3 (~~TRE-38–41~~), M4 (~~TRE-42/43/44~~).
+   Live demos (open real PRs / cost API) are user-run — see `docs/DEMO.md` and `docs/MCP.md`.
 4. **Before claiming any task done, run and pass:**
    ```bash
    pnpm lint && pnpm typecheck && pnpm test && pnpm build
@@ -26,10 +25,11 @@
 
 - **M0 (Foundations) is complete and verified.** The monorepo builds, typechecks, lints, and
   tests green. The `argus` CLI runs with placeholder commands.
-- **M0–M3 COMPLETE.** Generate (writes tests) → QA Gate (CI red/green) → Triage (classify) → Heal
-  (fix DOM drift → PR, refuse real bugs). sample-shop has seeded drift/bug toggles + `docs/DEMO.md`
-  so the self-heal is reproducible. Core suite: **55 passing tests**; CI + QA Gate green.
-- **Next milestone: M4 (`TRE-26`)** — MCP server + README/demo polish (others can use it).
+- **M0–M3 complete; M4 nearly done.** Full loop: Generate → QA Gate (CI red/green) → Triage → Heal
+  (PR on drift, refuse real bugs). **M4:** `argus-mcp` stdio server exposes the QA tools over MCP
+  (`docs/MCP.md`); README polished. Suites: **core 55 + mcp 2** passing; CI + QA Gate green.
+- **Remaining:** `TRE-45` demo GIFs (human-recorded) and optional `TRE-46` (Treeship). The product
+  is functionally whole.
 - **Pushed to GitHub** (2026-06-12): `main` tracks `origin/main`, CI runs on push. No blocking chores.
 
 ## What exists right now
@@ -52,7 +52,7 @@ pnpm --filter @argus/sample-shop dev        # ✓ serves login → products → 
 | Package | State | Notes |
 |---------|-------|-------|
 | `@argus/core` | **M1 complete (`TRE-31`–`TRE-34`)** | Tool Registry (10 Zod tools) + hand-rolled `runAgentLoop` + `AgentObserver`/`ConsoleObserver` + real `PlaywrightBrowserSession`/`PlaywrightTestRunner` + `trimHtml` cleaned snapshots + the **`generate()` behavior** (tuned prompt, deterministic path, `fs_write` capture). `@anthropic-ai/sdk@^0.104.1` + `playwright@^1.60.0`. Triage/Heal land in M3. |
-| `@argus/mcp` | stub | `describeServer()` placeholder. Real stdio MCP server = `TRE-42` (M4). |
+| `@argus/mcp` | **built (`TRE-42`)** | Real stdio MCP server (`argus-mcp` bin): `createArgusMcpServer` exposes all 10 registry tools over MCP, routing each call to `registry.execute` against a lazily-launched Playwright context. In-memory client/server test. Config: `docs/MCP.md`. |
 | `@argus/cli` | **generate/triage/heal + smoke live** | `argus generate <url> [--run]` writes+runs a spec; `argus triage <url> --spec …` classifies a failure; `argus heal <url> --spec …` self-heals DOM drift → PR; `argus smoke <url>` watches the loop. Only `author` remains a placeholder. |
 | `@argus/sample-shop` | **built (`TRE-30`)** | Next.js App Router app: `/login` (server-action gate, demo/demo) → `/products` (static Server Component catalog) → `/cart` (client context, live badge). `src/middleware.ts` enforces the gate. In-memory state, no DB. Stable `data-testid`s documented in its README — the contract M3 drifts for the self-heal demo. Runs on port 3100. |
 
@@ -259,6 +259,21 @@ Spec: `docs/superpowers/specs/2026-06-12-heal-demo-design.md`. Runbook: `docs/DE
   on given `url`/`spec`, **secret-gated** (`ANTHROPIC_API_KEY`) and non-auto-firing. Comment
   documents flipping it to `workflow_run`-on-QA-Gate-failure for full auto.
 - **`docs/DEMO.md`** — the drift + real-bug runbooks (user-run; opens a real PR / costs API).
+
+## Done: M4 (mostly) — `TRE-42/43/44`
+
+Spec: `docs/superpowers/specs/2026-06-12-mcp-server-design.md`.
+- **`TRE-42`** — real `@argus/mcp` stdio server. `createArgusMcpServer({ getContext })` registers
+  all 10 registry tools over MCP (via `toMcp()`); each routes to `registry.execute` against a
+  lazily-launched Playwright context. `argus-mcp` bin builds; in-memory client/server test (lists
+  10 tools + routes a call). No API key needed (the client LLM reasons); needs chromium.
+- **`TRE-43`** — `docs/MCP.md`: build steps + Claude Code (`claude mcp add` / `.mcp.json`) and
+  Claude Desktop config snippets + the tool table.
+- **`TRE-44`** — README: CI + QA Gate badges, self-heal demo, "use it on your own app"
+  (`--base-url`), MCP pointer, roadmap marked through M3.
+- **Remaining:** `TRE-45` (demo GIFs — record `argus generate`, the red→green gate, and a self-heal
+  PR; needs a person) and optional `TRE-46` (Treeship — see `docs/superpowers/specs/` is N/A; the
+  plan lives in the Linear ticket + the [[treeship-showcase]] memory).
 
 ## Process notes
 - Design is locked in `docs/DESIGN.md`. Tickets in Linear mirror `docs/ROADMAP.md`.
