@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditable AI QA — powered by Argus</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" id="theme" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --canvas: #05060a;
+        --ink: #e6edf3;
+        --muted: #9fb3d1;
+        --cyan: #22d3ee;
+        --indigo: #6366f1;
+        --violet: #a78bfa;
+        --green: #4ade80;
+        --red: #f87171;
+      }
+      .reveal {
+        font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+        color: var(--ink);
+        font-size: 30px;
+      }
+      .reveal .slides { text-align: left; }
+      .reveal .slides section { top: 0 !important; }
+      :is(.reveal) .backgrounds { background: var(--canvas); }
+      .reveal h1, .reveal h2, .reveal h3 { font-weight: 700; letter-spacing: -0.02em; text-transform: none; }
+      .reveal h1 { font-size: 2.4em; line-height: 1.05; }
+      .reveal h2 { font-size: 1.55em; line-height: 1.1; margin-bottom: 0.5em; }
+      .reveal h3 { font-size: 1.05em; }
+      .reveal p, .reveal li { color: var(--ink); line-height: 1.45; }
+      .reveal strong { color: #fff; }
+      .reveal a { color: var(--cyan); text-decoration: none; }
+      .reveal section img { border: none; box-shadow: none; }
+
+      .grad {
+        background: linear-gradient(90deg, #7dd3fc, var(--violet));
+        -webkit-background-clip: text; background-clip: text;
+        color: transparent; -webkit-text-fill-color: transparent;
+        -webkit-box-decoration-break: clone; box-decoration-break: clone;
+      }
+      .muted { color: var(--muted); }
+      .kicker {
+        font-family: 'JetBrains Mono', monospace; font-size: 0.55em; letter-spacing: 0.28em;
+        text-transform: uppercase; color: var(--cyan); margin: 0 0 0.6em;
+      }
+      .lead { font-size: 1.12em; color: var(--muted); max-width: 22em; }
+      .small { font-size: 0.7em; }
+      .mono { font-family: 'JetBrains Mono', monospace; }
+
+      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 0.5em; }
+      .cards.two { grid-template-columns: repeat(2, 1fr); }
+      .card {
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 16px; padding: 26px 24px;
+      }
+      .card h3 { margin: 0 0 0.35em; font-size: 0.92em; }
+      .card p { font-size: 0.62em; color: var(--muted); margin: 0; line-height: 1.4; }
+      .card .num { font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 0.6em; }
+
+      .orb {
+        width: 120px; height: 120px; border-radius: 50%; margin-bottom: 0.6em;
+        background: radial-gradient(circle at 50% 50%, var(--cyan) 0%, var(--indigo) 45%, #0b1020 78%);
+        box-shadow: 0 0 70px 10px rgba(56,189,248,.45);
+      }
+      .pill {
+        display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
+        padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14);
+        color: var(--muted); margin-right: 8px;
+      }
+      .flow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.8em; }
+      .flow .step {
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 12px; padding: 12px 18px; font-family: 'JetBrains Mono', monospace; font-size: 0.7em;
+      }
+      .flow .arrow { color: var(--violet); font-size: 1.1em; }
+      .ok { color: var(--green); } .bad { color: var(--red); } .vio { color: var(--violet); } .cy { color: var(--cyan); }
+
+      .receipt {
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(167,139,250,0.25);
+        border-radius: 14px; padding: 22px 26px; font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6em; line-height: 1.7; box-shadow: 0 0 60px rgba(167,139,250,0.12) inset;
+      }
+      .url {
+        font-family: 'JetBrains Mono', monospace; font-size: 0.62em; color: var(--cyan);
+        background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.25);
+        border-radius: 10px; padding: 10px 16px; display: inline-block; margin-top: 0.4em;
+      }
+      .reveal section .footnote {
+        position: absolute; bottom: -8px; left: 0; font-size: 0.5em; color: var(--muted);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .two-col { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
+      .reveal ul { margin-left: 1em; }
+      .reveal li { margin-bottom: 0.45em; }
+      .tag-row { margin-top: 0.6em; }
+      .reveal .progress { color: var(--violet); }
+      .reveal .controls { color: var(--cyan); }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <!-- 1 · TITLE -->
+        <section data-background-gradient="radial-gradient(60% 60% at 50% 30%, #0c1430 0%, #05060a 70%)">
+          <div class="orb"></div>
+          <p class="kicker">Argus</p>
+          <h1>Auditable <span class="grad">AI QA</span></h1>
+          <p class="lead" style="margin-top:0.5em;">Self-healing test automation your clients can actually trust — and <strong>verify</strong>.</p>
+          <p class="small muted" style="margin-top:1.4em;">A new premium service line · powered by Argus</p>
+          <aside class="notes">
+            Open line: "Your clients are starting to ask why they should pay for QA the tool now does for free. The honest answer — they're not paying for the healing. They're paying for proof. Let me show you it's real."
+          </aside>
+        </section>
+
+        <!-- 2 · THE SHIFT -->
+        <section>
+          <p class="kicker">The shift happening now</p>
+          <h2>AI is commoditizing what QA firms bill for</h2>
+          <div class="two-col">
+            <div>
+              <p>Test frameworks now <strong>self-heal</strong>. Automation and maintenance hours — the core of the bill — are becoming "free in the tool."</p>
+              <p class="muted">Clients are starting to ask: <em>why pay for QA the tool does for free?</em></p>
+            </div>
+            <div class="card" style="border-color: rgba(34,211,238,0.3);">
+              <h3 class="grad">The part that doesn't commoditize</h3>
+              <p style="font-size:0.7em;"><strong>Trust</strong> — proof that testing was actually done, done correctly, and didn't quietly bury a real bug. That's the premium a QA firm is uniquely positioned to own.</p>
+            </div>
+          </div>
+          <aside class="notes">Healing is becoming table stakes. The defensible, billable thing is verifiable trust. That reframes the whole engagement.</aside>
+        </section>
+
+        <!-- 3 · WHAT THIS DELIVERS -->
+        <section>
+          <p class="kicker">What this delivers</p>
+          <h2>Three things, in the client's words</h2>
+          <div class="cards">
+            <div class="card">
+              <h3>🔧 Self-healing tests</h3>
+              <p>When the UI drifts, the test repairs itself instead of failing — cutting the biggest cost in E2E: maintenance.</p>
+            </div>
+            <div class="card" style="border-color: rgba(167,139,250,0.35);">
+              <h3 class="grad">📜 A signed, auditable report</h3>
+              <p>Every result ships with verifiable proof of what was tested and what passed. A client-facing deliverable, not an internal log.</p>
+            </div>
+            <div class="card">
+              <h3>🛡️ Won't mask real bugs</h3>
+              <p>Built to surface genuine failures, not "heal" them into a false green — and the audit trail proves it.</p>
+            </div>
+          </div>
+          <p class="small muted" style="margin-top:1.2em;">Client experience: faster cycles · fewer false failures · a tamper-evident report they can hand to <em>their</em> auditor.</p>
+          <aside class="notes">These map to the three demo beats coming up: heal (wedge), receipt (premium), refuse (trust).</aside>
+        </section>
+
+        <!-- 4 · DEMO DIVIDER -->
+        <section data-background-gradient="radial-gradient(60% 60% at 50% 40%, #0c1430 0%, #05060a 70%)">
+          <p class="kicker">Live demo</p>
+          <h1>It's real.<br /><span class="grad">Let me show you.</span></h1>
+          <p class="lead" style="margin-top:0.6em;">Three beats: heal → receipt → refuse.</p>
+          <aside class="notes">Transition to screen. Recorded clips for heal + refuse; the receipt is LIVE and clickable.</aside>
+        </section>
+
+        <!-- 5 · BEAT 1 HEAL -->
+        <section>
+          <p class="kicker">Beat 1 · the wedge</p>
+          <h2>Self-healing: drift repairs itself</h2>
+          <p class="muted small">A dev renames a button's <span class="mono">data-testid</span>. Cosmetic drift. Today = a red build + an hour of an engineer's time.</p>
+          <div class="flow" style="margin:0.8em 0;">
+            <span class="step bad">test fails ✕</span>
+            <span class="arrow">→</span>
+            <span class="step">triage: <span class="cy">dom-drift</span></span>
+            <span class="arrow">→</span>
+            <span class="step">rewrite locator</span>
+            <span class="arrow">→</span>
+            <span class="step ok">re-run: green ✓</span>
+            <span class="arrow">→</span>
+            <span class="step vio">opens PR</span>
+          </div>
+          <p>The single biggest cost in E2E — maintenance — drops to near-zero.</p>
+          <p class="small muted"><strong>But healing is now free in the tools.</strong> Here's what isn't. →</p>
+          <aside class="notes">Narrate over the recorded clip. Land: that's the wedge, not the premium.</aside>
+        </section>
+
+        <!-- 6 · BEAT 2 RECEIPT -->
+        <section data-background-gradient="radial-gradient(70% 70% at 70% 50%, #140d2e 0%, #05060a 70%)">
+          <p class="kicker">Beat 2 · the premium</p>
+          <h2>Self-healing QA you can <span class="grad">audit</span></h2>
+          <div class="two-col">
+            <div>
+              <p class="small">Every run produces a <strong>signed, tamper-evident receipt</strong>: every tool call + decision, hashed and chained, signed by an <strong>independent notary</strong>.</p>
+              <p class="small muted">"Don't take my word for it — <strong>you</strong> verify it."</p>
+              <p class="url">treeship.dev/receipt/ssn_b965f6f0a82f1294</p>
+            </div>
+            <div class="receipt">
+              <span class="cy">$ argus heal --spec checkout.spec.ts</span><br />
+              triage  → dom-drift (locator stale)<br />
+              heal    → rewrote getByRole('button')<br />
+              verify  → 12 passed <span class="ok">(green)</span><br />
+              pr      → #42 opened<br /><br />
+              <span class="vio">✓ verified · 21 artifacts · chain intact</span>
+            </div>
+          </div>
+          <p class="footnote">Honesty: proves <em>what happened</em> — verifiable &amp; auditable. Not a claim that the agent's judgment is infallible.</p>
+          <aside class="notes">SLOW DOWN. Open the live URL. Walk timeline → decision+rationale → "chain intact" → independent notary. Run `treeship verify` live. This is the client-facing deliverable that justifies premium billing.</aside>
+        </section>
+
+        <!-- 7 · BEAT 3 REFUSE -->
+        <section>
+          <p class="kicker">Beat 3 · the trust proof</p>
+          <h2>It won't mask a real bug</h2>
+          <p class="muted small">The fear with self-healing: does it paper over real failures to stay green? Watch — login now rejects valid credentials.</p>
+          <div class="flow" style="margin:0.8em 0;">
+            <span class="step bad">test fails ✕</span>
+            <span class="arrow">→</span>
+            <span class="step">triage: <span class="bad">real-bug</span></span>
+            <span class="arrow">→</span>
+            <span class="step bad">refuses to heal</span>
+            <span class="arrow">→</span>
+            <span class="step bad">gate stays red ✕</span>
+          </div>
+          <p>Heals the noise. <strong>Escalates the signal.</strong> The audit trail proves which call it made — and why.</p>
+          <p class="small grad">That combination is the trust you can charge for.</p>
+          <aside class="notes">Recorded clip. The refusal + rationale is captured in the receipt too. This is the line that makes it trustworthy.</aside>
+        </section>
+
+        <!-- 8 · HOW ATTESTATION WORKS -->
+        <section>
+          <p class="kicker">Under the hood</p>
+          <h2>How the proof works</h2>
+          <div class="flow" style="margin:0.6em 0 1em;">
+            <span class="step">1 · hash each step</span>
+            <span class="arrow">→</span>
+            <span class="step">2 · chain the records</span>
+            <span class="arrow">→</span>
+            <span class="step">3 · sign the session</span>
+            <span class="arrow">→</span>
+            <span class="step vio">4 · independent notary</span>
+          </div>
+          <ul class="small">
+            <li><strong>Tamper-evident:</strong> change any step and every hash after it breaks → "chain intact" means no breaks.</li>
+            <li><strong>Unforgeable:</strong> signed with a private key we don't hold; verifiable by anyone with the public key.</li>
+            <li><strong>Credible to third parties:</strong> a separate system signs it — not Argus marking its own homework.</li>
+          </ul>
+          <aside class="notes">Keep this short unless they ask. The honesty constraint matters: verifiable/auditable, never "guarantees correctness."</aside>
+        </section>
+
+        <!-- 9 · WHY IT MATTERS FOR THE FIRM -->
+        <section>
+          <p class="kicker">Why it matters for your firm</p>
+          <h2>A premium service line</h2>
+          <div class="cards two">
+            <div class="card"><h3 class="cy">Margin</h3><p>Less time on test maintenance per engagement.</p></div>
+            <div class="card"><h3 class="cy">Differentiation</h3><p>"AI QA you can audit" — something low-cost AI tools can't offer.</p></div>
+            <div class="card"><h3 class="cy">Premium billing</h3><p>Auditable proof justifies a higher-value tier.</p></div>
+            <div class="card"><h3 class="cy">Enterprise &amp; compliance</h3><p>Regulated clients need verifiable evidence, not assurances.</p></div>
+          </div>
+          <aside class="notes">Tie each back to a beat they just saw.</aside>
+        </section>
+
+        <!-- 10 · COVERAGE -->
+        <section>
+          <p class="kicker">Coverage today · honest scope</p>
+          <h2>Where it runs</h2>
+          <div class="cards">
+            <div class="card" style="border-color: rgba(74,222,128,0.35);">
+              <h3 class="ok">Web — now</h3>
+              <p>Available today. This is where a pilot starts.</p>
+            </div>
+            <div class="card">
+              <h3 class="cy">Mobile — near-term</h3>
+              <p>On the roadmap; the execution layer is built to slot in a mobile driver.</p>
+            </div>
+            <div class="card">
+              <h3 class="vio">CTV / streaming</h3>
+              <p>Roku, Fire TV, smart TVs. We <strong>wrap existing</strong> CTV test tooling in the audit layer — not replace it.</p>
+            </div>
+          </div>
+          <p class="small muted" style="margin-top:1.1em;">The model: turn the hardest, most expensive QA line into the one you can <em>guarantee</em> — with proof.</p>
+          <aside class="notes">Honesty about scope builds credibility. CTV = wrap, not rebuild.</aside>
+        </section>
+
+        <!-- 11 · THE PILOT -->
+        <section data-background-gradient="radial-gradient(60% 60% at 50% 40%, #0c1430 0%, #05060a 70%)">
+          <p class="kicker">The pilot · zero risk</p>
+          <h2>One web client. Two metrics. <span class="grad">Near-zero lift.</span></h2>
+          <div class="two-col">
+            <div>
+              <p class="small">We handle integration end-to-end. Nothing for your team to build or maintain — <strong>capability + delivery</strong>, not a tool to license.</p>
+              <p class="small muted">If it doesn't deliver, nothing is lost. If it does, we formalize it across your client base.</p>
+            </div>
+            <div class="card">
+              <p class="num">SUCCESS METRICS</p>
+              <h3 style="margin-top:0.3em;">1 · Test-maintenance hours saved</h3>
+              <h3>2 · Client response to the auditable report</h3>
+            </div>
+          </div>
+          <aside class="notes">This is the ask. Agree the two metrics up front. Make it feel risk-free.</aside>
+        </section>
+
+        <!-- 12 · CLOSE -->
+        <section data-background-gradient="radial-gradient(60% 60% at 50% 35%, #0c1430 0%, #05060a 72%)">
+          <div class="orb" style="width:90px;height:90px;"></div>
+          <h1>Pick one web client.<br /><span class="grad">Let's run the pilot.</span></h1>
+          <div class="tag-row">
+            <span class="pill">Live demo · argus-web-psi.vercel.app</span>
+            <span class="pill">Verify a receipt · treeship.dev/receipt/…</span>
+          </div>
+          <p class="small muted" style="margin-top:1.2em;">Auditable AI QA — the trust layer for autonomous testing.</p>
+          <aside class="notes">Close on the one line you opened with: they pay for proof, and the proof is real.</aside>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'fade',
+        backgroundTransition: 'fade',
+        width: 1280,
+        height: 720,
+        margin: 0.06,
+        plugins: [RevealNotes],
+      });
+    </script>
+  </body>
+</html>

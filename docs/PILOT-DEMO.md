@@ -119,6 +119,7 @@ This is the demo. Slow down here.
 
 ## Asset links
 
+- **Slide deck:** [`pitch/auditable-ai-qa.html`](./pitch/auditable-ai-qa.html) — open in a browser, **F** = fullscreen, **S** = speaker notes (talk track embedded), arrows to navigate. PDF handout: [`pitch/auditable-ai-qa.pdf`](./pitch/auditable-ai-qa.pdf). *Present from the HTML for best fidelity.*
 - Landing page: <https://argus-web-psi.vercel.app>
 - Live verified receipt (drift heal): <https://treeship.dev/receipt/ssn_b965f6f0a82f1294>
 - Repo: <https://github.com/piyushpathakqa/argus> · technical runbook: [`DEMO.md`](./DEMO.md) · MCP: [`MCP.md`](./MCP.md) · provenance: [`TREESHIP.md`](./TREESHIP.md)
