@@ -165,7 +165,7 @@ function Gate({ local, dur, fps }: { local: number; dur: number; fps: number }) 
             {mark}
           </div>
           <div>
-            <div style={{ color: INK }}>Required check · argus-qa</div>
+            <div style={{ color: INK }}>Required check · vigilis-qa</div>
             <div style={{ color, fontSize: 26 }}>{status}</div>
           </div>
         </div>
@@ -207,7 +207,6 @@ function Heal({ local, dur }: { local: number; dur: number }) {
     { t: 'heal   → rewrote stale locator', c: CYAN },
     { t: 'verify → 12 passed (green)', c: GREEN },
     { t: 'pr     → #42 opened', c: INK },
-    { t: '✓ verified · 21 artifacts · chain intact', c: VIOLET },
   ];
   return (
     <StageShell local={local} dur={dur}>
@@ -225,6 +224,49 @@ function Heal({ local, dur }: { local: number; dur: number }) {
             </div>
           );
         })}
+      </Card>
+    </StageShell>
+  );
+}
+
+function Verify({ local, dur, fps }: { local: number; dur: number; fps: number }) {
+  const lines = [
+    { t: 'seal   → signing every tool call + decision…', c: MUTED },
+    { t: 'notary → Treeship (independent)', c: INK },
+  ];
+  const stamp = spring({ frame: local - 42, fps, config: { damping: 11, mass: 0.7 } });
+  return (
+    <StageShell local={local} dur={dur}>
+      <Label n="05" text="Verify" />
+      <Card>
+        {lines.map((ln, i) => {
+          const at = 16 + i * 20;
+          const o = interpolate(local, [at, at + 12], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          });
+          return (
+            <div key={ln.t} style={{ opacity: o, color: ln.c }}>
+              {ln.t}
+            </div>
+          );
+        })}
+        <div
+          style={{
+            marginTop: 26,
+            display: 'inline-block',
+            transform: `scale(${0.7 + 0.3 * stamp}) rotate(${-3 + 3 * stamp}deg)`,
+            opacity: stamp,
+            border: `2px solid ${VIOLET}`,
+            borderRadius: 12,
+            padding: '12px 26px',
+            color: VIOLET,
+            fontSize: 34,
+            fontWeight: 700,
+          }}
+        >
+          🔏 verified · chain intact · independently signed
+        </div>
       </Card>
     </StageShell>
   );
@@ -249,6 +291,9 @@ export const VigilisLoop = () => {
       </Sequence>
       <Sequence from={seg * 3} durationInFrames={seg}>
         <Heal local={frame - seg * 3} dur={seg} />
+      </Sequence>
+      <Sequence from={seg * 4} durationInFrames={seg}>
+        <Verify local={frame - seg * 4} dur={seg} fps={fps} />
       </Sequence>
     </AbsoluteFill>
   );

@@ -5,7 +5,7 @@ export const RemotionRoot = () => (
   <Composition
     id="VigilisLoop"
     component={VigilisLoop}
-    durationInFrames={540}
+    durationInFrames={675}
     fps={30}
     width={1920}
     height={1080}

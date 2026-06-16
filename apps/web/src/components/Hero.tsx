@@ -41,8 +41,8 @@ export function Hero() {
         </a>
       </motion.div>
       <motion.div {...fade(0.45)} className="glass mt-14 w-full overflow-hidden rounded-xl">
-        <video className="w-full" autoPlay muted loop playsInline poster="/argus-loop-poster.png">
-          <source src="/argus-loop.mp4" type="video/mp4" />
+        <video className="w-full" autoPlay muted loop playsInline poster="/vigilis-loop-poster.png">
+          <source src="/vigilis-loop.mp4" type="video/mp4" />
         </video>
       </motion.div>
     </section>
