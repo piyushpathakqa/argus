@@ -39,12 +39,14 @@ treeship --version
 ```tsx
 <button type="submit" disabled={pending} data-testid={SUBMIT_TESTID}>
 ```
-to a brand-new name:
+to:
 ```tsx
-<button type="submit" disabled={pending} data-testid="signin-button">
+<button type="submit" disabled={pending} data-testid="submit-btn">
 ```
 **Save.** Next.js Fast-Refresh updates the page instantly.
-**[SAY]** "Now I'm just a developer doing a routine refactor — I'll rename this button's test-id to `signin-button`. Save. The button works exactly the same."
+**[SAY]** "Now I'm just a developer doing a routine refactor — I'll rename this button's test-id to `submit-btn`. Save. The button works exactly the same."
+
+> ⚠️ **Pick the new name carefully — and test it once.** Triage is semantic and conservative: the new id must still read as *the same submit control, renamed* (keep the word "submit"). `submit-btn` is verified → `dom-drift` → heals. An off-theme name like `signin-button` can make triage conclude the testid is simply *missing* → it returns **real-bug and refuses to heal** (the never-mask-a-bug guardrail firing correctly — but the wrong outcome for the *drift* beat). If you want a different name, rehearse it first; otherwise use `submit-btn`.
 
 **[DO]** Terminal 2: `npx playwright test`  → **[SHOW]** red, failed
 **[SAY]** "And the suite goes red. Look at the error — `Locator: getByTestId('login-submit')` … element(s) not found. The test is hunting for an id that no longer exists. Today this is a human's afternoon. Instead —"
@@ -57,8 +59,8 @@ node --env-file=.env packages/cli/dist/index.js heal \
 ```
 **[SAY] (while it scrolls)** "— I point Argus at it. It reads the spec, drives the live page, and works out what changed. It doesn't patch blindly — it triages first."
 
-**[SHOW]** verdict: `dom-drift` — rationale names `login-submit` → `signin-button`
-**[SAY]** "There — DOM drift. And notice it figured out the new id was `signin-button` on its own — nothing scripted, it read the live DOM. It rewrites the locator, re-runs the test itself to confirm it's genuinely green, done. ~30 seconds, zero human time. That's the wedge — but it's not the point."
+**[SHOW]** verdict: `dom-drift` — rationale names `login-submit` → `submit-btn`
+**[SAY]** "There — DOM drift. It figured out the new id by reading the live DOM, rewrites the locator, re-runs the test itself to confirm it's genuinely green, done. ~30 seconds, zero human time. That's the wedge — but it's not the point."
 
 **[DO]** reset both files:
 ```bash
@@ -113,7 +115,7 @@ NEXT_PUBLIC_ARGUS_DEMO_BUG=1 pnpm --filter @argus/sample-shop dev
 
 ## Cheat sheet (tape to the side of your screen)
 0. App running, NO flag: `pnpm --filter @argus/sample-shop dev`
-1. T2 `npx playwright test` (green) → edit `login/page.tsx:52` testid → `"signin-button"`, save → T2 `npx playwright test` (red) → `heal … --no-pr` (dom-drift, green) → `git checkout apps/sample-shop/src/app/login/page.tsx tests/generated/login.spec.ts`
+1. T2 `npx playwright test` (green) → edit `login/page.tsx:52` testid → `"submit-btn"` (keep "submit"!), save → T2 `npx playwright test` (red) → `heal … --no-pr` (dom-drift, green) → `git checkout apps/sample-shop/src/app/login/page.tsx tests/generated/login.spec.ts`
 2. Open heal receipt → optional `treeship verify ssn_b965f6f0a82f1294`
 3. T1 restart `…DEMO_BUG=1 … dev` → T2 `heal …` (real-bug, refuses) → open refusal receipt
 4. CI gate + MCP one-liner → close + pilot ask
