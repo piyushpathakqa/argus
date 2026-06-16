@@ -38,7 +38,7 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 > 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
 >
 > It's open source. CLI + an MCP server, so you can drive the whole thing from Claude.
-> 🌐 https://argus-web-psi.vercel.app
+> 🌐 https://argusqa.dev
 > 💻 https://github.com/piyushpathakqa/argus
 >
 > One honest line: a receipt proves *what happened* — verifiable and auditable. It doesn't claim the agent is infallible. It makes its decisions reviewable instead of invisible. That's the whole point.
@@ -63,7 +63,7 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 > 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
 >
 > Open source, CLI + MCP (drive it from Claude):
-> 🌐 https://argus-web-psi.vercel.app
+> 🌐 https://argusqa.dev
 > 💻 https://github.com/piyushpathakqa/argus
 >
 > Self-healing is becoming free. Trust is the part that isn't. Would love your take. 👇
@@ -75,7 +75,7 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 ## Suggested first comment (if links go in comments)
 
 > Links 👇
-> • Try it / docs: https://argus-web-psi.vercel.app
+> • Try it / docs: https://argusqa.dev
 > • Code (MIT, open source): https://github.com/piyushpathakqa/argus
 > • A live receipt where it *healed* drift: https://treeship.dev/receipt/ssn_b965f6f0a82f1294
 > • A live receipt where it *refused* a real bug: https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
@@ -101,7 +101,7 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 > 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
 >
 > Open source. CLI + an MCP server, so you can drive it from Claude.
-> 🌐 https://argus-web-psi.vercel.app
+> 🌐 https://argusqa.dev
 > 💻 https://github.com/piyushpathakqa/argus
 >
 > Playwright today — more frameworks next. If your team wants this running on your stack, let's talk.
@@ -119,7 +119,7 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 
 ### First comment (links + credit)
 > Links 👇
-> • Try it / docs: https://argus-web-psi.vercel.app
+> • Try it / docs: https://argusqa.dev
 > • Code (MIT): https://github.com/piyushpathakqa/argus
 > • A receipt where it healed drift: https://treeship.dev/receipt/ssn_b965f6f0a82f1294
 > • A receipt where it refused a real bug: https://treeship.dev/receipt/ssn_3834e1bcc2651d7d

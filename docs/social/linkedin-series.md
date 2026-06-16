@@ -141,7 +141,7 @@ Arc: **1 problem → 2 the shift → 3 the uncomfortable question → 4 the prin
 > 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
 >
 > It's open source. CLI + an MCP server so you can drive it from Claude.
-> • Site: https://argus-web-psi.vercel.app
+> • Site: https://argusqa.dev
 > • Code: https://github.com/piyushpathakqa/argus
 >
 > Self-healing is becoming free. Trust is the part that isn't.

@@ -13,7 +13,7 @@
 3. Done: M0, M1 (~~TRE-30–34~~), M2 (~~TRE-35/36/37~~), M3 (~~TRE-38–41~~),
    M4 (~~TRE-42/43/44~~ + ~~TRE-46~~; TRE-45 = GIFs). Live demos (open real PRs / cost API) are
    user-run — see `docs/DEMO.md`, `docs/MCP.md`, `docs/TREESHIP.md`.
-   **Landing page shipped + deployed live:** <https://argus-web-psi.vercel.app> (`apps/web`) —
+   **Landing page shipped + deployed live:** <https://argusqa.dev> (`apps/web`) —
    see the "Landing page (`apps/web`)" section below.
 4. **Before claiming any task done, run and pass:**
    ```bash
@@ -290,7 +290,7 @@ Spec: `docs/superpowers/specs/2026-06-13-landing-page-design.md`. Plan:
   Generate→Gate→Triage→Heal). Sections: Hero · Loop · Architecture · Advantages · Provenance ·
   Footer. Dev: `pnpm --filter @argus/web dev` (→ :3200). Re-render the video:
   `pnpm --filter @argus/web render` (Remotion fetches its own headless Chrome).
-- **Deployed (live):** <https://argus-web-psi.vercel.app> — Vercel project `argus-web`
+- **Deployed (live):** <https://argusqa.dev> — Vercel project `argus-web`
   (`piyushpathakqas-projects`), a separate project from this same repo with **Root Directory
   `apps/web`** (set on the project; `apps/web/vercel.json` pins framework/build/install). The
   `.vercel` link lives at the **repo root** (gitignored) so the whole monorepo uploads and Vercel
