@@ -7,6 +7,9 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 - **Reach tip:** posts with outbound links sometimes get throttled. Consider putting the GitHub/site links in the **first comment** instead of the body, and saying "links in the comments 👇". Both versions below are written so they work either way.
 - Attach a visual: the landing-page hero, a screenshot of a live receipt, or the Remotion MP4 of a failing test. Native video/images lift reach.
 - Best post time: Tue–Thu morning.
+- **Tags:** replace `@Zerker Lab` / `@Treeship` / `@Revaz` with the real LinkedIn company-page and profile handles so they actually notify. Tagging triggers founder amplification (Revaz offered + said he'd post his own endorsement).
+
+> **➡️ Version C below is the recommended launch post** — it credits Treeship / Zerker Lab as the independent provenance layer and opens the product on-ramp. Use it over Versions A/B for launch night.
 
 ---
 
@@ -79,3 +82,45 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 > • Built with provenance from @Treeship.
 
 *Data notes:* all links live and verified. Product claims (generate/gate/triage/heal/refuse/receipt, MCP + CLI, open source) are all true of the current build. The "self-healing is commoditizing" framing references real products (Playwright, mabl, Testim). Nothing fabricated.
+
+---
+
+## Version C — launch with Treeship / Zerker Lab (RECOMMENDED)
+
+> AI is writing more of our code every day. Which quietly makes one thing the bottleneck: tests and guardrails — the part you can least afford to get wrong.
+>
+> So today I'm open-sourcing Argus — an AI agent that writes, gates, and self-heals your Playwright tests, and runs them 24/7.
+>
+> But the part I actually care about isn't the healing. When an agent rewrites your tests on its own, the real question isn't "did it pass?" — it's "can I trust what it did?"
+>
+> So every run Argus does is sealed in a signed, tamper-evident receipt — every tool call and decision, independently verifiable. It auto-heals cosmetic UI drift… but refuses to heal a real bug, and the receipt proves which call it made, and why.
+>
+> That trust layer is powered by Treeship, built by @Zerker Lab — an independent provenance system. And that independence is the whole point: an agent signing its own logs is marking its own homework. Treeship is the notary that makes the proof actually credible.
+>
+> Don't take my word for it — verify a real one yourself. Here's a run where Argus caught a real bug and refused to heal it:
+> 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
+>
+> Open source. CLI + an MCP server, so you can drive it from Claude.
+> 🌐 https://argus-web-psi.vercel.app
+> 💻 https://github.com/piyushpathakqa/argus
+>
+> Playwright today — more frameworks next. If your team wants this running on your stack, let's talk.
+>
+> Huge thanks to @Revaz and the @Zerker Lab team. Self-healing is becoming free. Trust is the part that isn't.
+>
+> #QA #TestAutomation #SDET #AIinTesting #OpenSource #QualityEngineering #DevTools
+
+### How to land the co-marketing (do this on launch night)
+- **Tag** the real @Zerker Lab page, @Treeship, and @Revaz's profile so they're notified.
+- **Revaz offered an endorsement** — let him drop it as a comment (best for reach: comments from a tagged founder boost the post), or paste his words as a pull-quote if he confirms the wording. His draft was roughly:
+  > "Piyush is one of the best test-driven engineers I've worked with — he's turned that expertise into an agent that runs 24/7, powered by Zerker Lab + Treeship. As guardrails and test-centered engineering become the bottleneck, Argus has helped us move much faster."
+  *(Use his final wording — don't post a quote he hasn't signed off on.)*
+- **Product on-ramp:** the "if your team wants this on your stack, let's talk" line is the seed for the enterprise/multi-framework path Revaz floated (other orgs install Argus → packaged paid product). Keep it soft on launch day; follow up in DMs.
+
+### First comment (links + credit)
+> Links 👇
+> • Try it / docs: https://argus-web-psi.vercel.app
+> • Code (MIT): https://github.com/piyushpathakqa/argus
+> • A receipt where it healed drift: https://treeship.dev/receipt/ssn_b965f6f0a82f1294
+> • A receipt where it refused a real bug: https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
+> • Provenance powered by Treeship, built by @Zerker Lab — thanks @Revaz 🙏
