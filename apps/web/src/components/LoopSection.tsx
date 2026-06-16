@@ -7,13 +7,14 @@ const STAGES = [
   { k: 'Gate', d: 'The spec runs in CI as a required check — failing tests block the deploy.' },
   { k: 'Triage', d: 'On failure it classifies the cause: real bug vs DOM drift vs flake.' },
   { k: 'Heal', d: 'For drift it rewrites the locator, verifies green, and opens a PR — never masking real bugs.' },
+  { k: 'Verify', d: 'Every run is sealed into a signed, tamper-evident receipt — independently verifiable, not "trust me".' },
 ];
 
 export function LoopSection() {
   return (
-    <section id="loop" className="mx-auto max-w-5xl px-6 py-24">
-      <h2 className="text-center text-3xl font-bold">One loop, four behaviours</h2>
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section id="loop" className="mx-auto max-w-6xl px-6 py-24">
+      <h2 className="text-center text-3xl font-bold">One loop, five behaviours</h2>
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {STAGES.map((s, i) => (
           <motion.div
             key={s.k}
