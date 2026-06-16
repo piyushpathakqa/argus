@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --canvas: #05060a; --ink: #e6edf3; --muted: #9fb3d1;
+        --cyan: #22d3ee; --indigo: #6366f1; --violet: #a78bfa;
+      }
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1200px; height: 630px; }
+      body {
+        background: var(--canvas); color: var(--ink);
+        font-family: 'Space Grotesk', sans-serif; position: relative; overflow: hidden;
+        display: flex; flex-direction: column; justify-content: center; padding: 0 92px;
+      }
+      .grid {
+        position: absolute; inset: 0; opacity: 0.16;
+        background-image:
+          linear-gradient(rgba(99,102,241,.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(99,102,241,.25) 1px, transparent 1px);
+        background-size: 56px 56px;
+        -webkit-mask-image: radial-gradient(120% 100% at 20% 0%, #000 35%, transparent 80%);
+      }
+      .orb {
+        position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+        width: 360px; height: 360px; border-radius: 50%; filter: blur(2px);
+        background: radial-gradient(circle at 50% 50%, var(--cyan) 0%, var(--indigo) 45%, #0b1020 78%);
+        box-shadow: 0 0 160px 30px rgba(56,189,248,.35);
+      }
+      .kicker {
+        font-family: 'JetBrains Mono', monospace; font-size: 22px; letter-spacing: 0.28em;
+        text-transform: uppercase; color: var(--cyan); margin-bottom: 22px; position: relative;
+      }
+      h1 {
+        font-size: 130px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; position: relative;
+        background: linear-gradient(90deg, #7dd3fc, var(--violet));
+        -webkit-background-clip: text; background-clip: text;
+        color: transparent; -webkit-text-fill-color: transparent;
+      }
+      p.tag { position: relative; font-size: 34px; color: var(--ink); margin-top: 26px; max-width: 18ch; line-height: 1.25; }
+      p.tag b { color: #fff; }
+      .chips { position: relative; margin-top: 30px; display: flex; gap: 14px; }
+      .chip {
+        font-family: 'JetBrains Mono', monospace; font-size: 19px; color: var(--muted);
+        border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 8px 18px;
+      }
+      .chip b { color: var(--violet); font-weight: 500; }
+    </style>
+  </head>
+  <body>
+    <div class="grid"></div>
+    <div class="orb"></div>
+    <div class="kicker">The trust layer for autonomous testing</div>
+    <h1>ARGUS</h1>
+    <p class="tag">Self-healing tests you can <b>verify</b>.</p>
+    <div class="chips">
+      <span class="chip">signed</span>
+      <span class="chip">tamper-evident</span>
+      <span class="chip"><b>✓</b> independently verifiable</span>
+    </div>
+  </body>
+</html>

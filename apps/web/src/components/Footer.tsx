@@ -6,7 +6,7 @@ export function Footer() {
         <code>
           git clone https://github.com/piyushpathakqa/argus
           {'\n'}cd argus &amp;&amp; pnpm install &amp;&amp; pnpm build
-          {'\n'}pnpm argus generate --url http://localhost:3000
+          {'\n'}node packages/cli/dist/index.js generate &lt;your-app-url&gt; --run
         </code>
       </pre>
       <nav className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-[var(--color-muted)]">
@@ -19,8 +19,27 @@ export function Footer() {
         <a className="hover:text-[var(--color-ink)]" href="https://github.com/piyushpathakqa/argus/blob/main/docs/MCP.md">
           MCP
         </a>
+        <a
+          className="hover:text-[var(--color-ink)]"
+          href="https://treeship.dev/receipt/ssn_3834e1bcc2651d7d"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Verify a receipt
+        </a>
       </nav>
-      <p className="mt-8 text-xs text-[var(--color-muted)]">MIT · Built by Piyush Pathak</p>
+      <p className="mt-8 text-xs text-[var(--color-muted)]">
+        MIT · Built by Piyush Pathak · Provenance powered by{' '}
+        <a
+          className="underline hover:text-[var(--color-ink)]"
+          href="https://www.treeship.dev"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Treeship
+        </a>{' '}
+        (Zerker Lab)
+      </p>
     </footer>
   );
 }
