@@ -95,12 +95,15 @@ hide failures.
 
 ### Use it in your own Playwright project
 
-`argus init` scaffolds an `vigilis.config.json` so `generate`/`triage`/`heal` pick up your
-project's defaults (`baseUrl`, `testDir`, `model`) — explicit flags always override it:
+Install the [`vigilis`](https://www.npmjs.com/package/vigilis) package, then `vigilis init`
+scaffolds a `vigilis.config.json` so `generate`/`triage`/`heal` pick up your project's defaults
+(`baseUrl`, `testDir`, `model`) — explicit flags always override it:
 
 ```bash
-node --env-file=.env packages/cli/dist/index.js init   # detects playwright.config.*, writes vigilis.config.json
-node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/login --run
+npm i -D vigilis
+export ANTHROPIC_API_KEY=sk-...
+vigilis init                                       # detects playwright.config.*, writes vigilis.config.json
+vigilis generate https://your-app.com/login --run  # explore → write + run a real spec
 ```
 
 Or point any command at any URL directly; `--base-url` runs generated specs against any host:

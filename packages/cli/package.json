@@ -1,22 +1,55 @@
 {
-  "name": "@argus/cli",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Vigilis CLI: vigilis author|generate|triage|heal.",
+  "name": "vigilis",
+  "version": "0.1.0",
+  "description": "Vigilis — the trust layer for autonomous testing. An AI agent that writes, gates, triages and self-heals your Playwright tests, with signed, independently verifiable receipts.",
   "type": "module",
   "license": "MIT",
+  "author": "Piyush Pathak",
+  "homepage": "https://vigilis.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piyushpathakqa/Vigilis.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "playwright",
+    "qa",
+    "testing",
+    "test-automation",
+    "self-healing",
+    "ai",
+    "agent",
+    "provenance",
+    "attestation",
+    "mcp"
+  ],
   "bin": {
     "vigilis": "./dist/index.js",
     "argus": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --clean",
+    "build": "tsup src/index.ts --format esm --clean --external @treeship/sdk",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@argus/core": "workspace:*",
-    "commander": "^13.0.0"
+    "@anthropic-ai/sdk": "^0.104.1",
+    "@playwright/test": "^1.60.0",
+    "commander": "^13.0.0",
+    "playwright": "^1.60.0",
+    "zod": "^4.4.3"
+  },
+  "optionalDependencies": {
+    "@treeship/sdk": "^0.12.0"
+  },
+  "devDependencies": {
+    "@argus/core": "workspace:*"
   }
 }

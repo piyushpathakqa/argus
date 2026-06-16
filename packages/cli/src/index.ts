@@ -75,7 +75,7 @@ const SMOKE_SYSTEM =
 program
   .name('vigilis')
   .description('Agentic QA: author, generate, triage, and self-heal Playwright tests.')
-  .version('0.0.0');
+  .version('0.1.0');
 
 program
   .command('init')
@@ -104,8 +104,8 @@ program
       console.log(`  ${n++}. Set ANTHROPIC_API_KEY (in .env or your shell) — needed for generate/triage/heal.`);
     }
     console.log(`  ${n++}. Edit ${CONFIG_FILE} (baseUrl, testDir, model) to match your app.`);
-    console.log(`  ${n++}. argus generate <url>            # explore the app and write a spec`);
-    console.log(`  ${n++}. argus heal <url> --spec <file>  # self-heal drift → verified PR + signed receipt`);
+    console.log(`  ${n++}. vigilis generate <url>            # explore the app and write a spec`);
+    console.log(`  ${n++}. vigilis heal <url> --spec <file>  # self-heal drift → verified PR + signed receipt`);
   });
 
 program
@@ -286,7 +286,7 @@ program
       // session. A no-op if the `treeship` CLI isn't installed (the observer is null).
       // Opt out with --no-receipt.
       const tree = opts.receipt === false ? null : await createTreeshipObserver({ label: 'heal' });
-      if (tree) await treeshipCli(['session', 'start', '--name', `argus heal ${slug}`]);
+      if (tree) await treeshipCli(['session', 'start', '--name', `vigilis heal ${slug}`]);
       const observer = composeObservers(new ConsoleObserver(), tree);
 
       try {
