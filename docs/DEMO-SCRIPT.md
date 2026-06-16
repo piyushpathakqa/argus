@@ -12,8 +12,14 @@ grep -q "ANTHROPIC_API_KEY=sk-" .env && echo "key ok"
 treeship --version
 ```
 - **Two terminals**, font ~18pt, cleared.
+- **Editor open** at `apps/sample-shop/src/app/login/page.tsx` (the button line ~52) — you'll edit it live in Scenario A.
 - **Tabs pre-open:** landing page · heal receipt (`…ssn_b965f6f0a82f1294`) · refusal receipt (`…ssn_3834e1bcc2651d7d`).
-- Working tree clean: `git checkout tests/generated/login.spec.ts`.
+- Working tree clean: `git checkout tests/generated/login.spec.ts apps/sample-shop/src/app/login/page.tsx`.
+- Start the app with **no flag** (renders the original `login-submit` id, suite is green):
+  ```bash
+  pkill -f "sample-shop"; pkill -f "next dev"
+  pnpm --filter @argus/sample-shop dev
+  ```
 
 ---
 
@@ -22,12 +28,26 @@ treeship --version
 
 ---
 
-## 1 · Scenario A — drift heals (~2 min)
-**[DO]** Terminal 1: `NEXT_PUBLIC_ARGUS_DEMO_DRIFT=1 pnpm --filter @argus/sample-shop dev`
-**[SAY]** "This is a normal end-to-end test against a sample shop. Now a developer ships a UI tweak and renames a button's test-id — happens constantly. Watch what it does to the suite."
+## 1 · Scenario A — you break it, Argus heals it (~3 min)
 
-**[DO]** Terminal 2: `npx playwright test`  → **[SHOW]** red, 2 failed
-**[SAY]** "There's the red — locator not found. Today this is a human's afternoon: find it, fix the selector, re-run. Instead —"
+> Primary path = **live edit** (the audience sees the cause). The env-flag path is the no-touch fallback at the bottom.
+
+**[DO]** Terminal 2: `npx playwright test`  → **[SHOW]** green, all passing
+**[SAY]** "Normal end-to-end suite against a sample shop. Baseline — everything's green."
+
+**[DO]** In the editor, `apps/sample-shop/src/app/login/page.tsx` (~line 52), rename the button's id. Change:
+```tsx
+<button type="submit" disabled={pending} data-testid={SUBMIT_TESTID}>
+```
+to a brand-new name:
+```tsx
+<button type="submit" disabled={pending} data-testid="signin-button">
+```
+**Save.** Next.js Fast-Refresh updates the page instantly.
+**[SAY]** "Now I'm just a developer doing a routine refactor — I'll rename this button's test-id to `signin-button`. Save. The button works exactly the same."
+
+**[DO]** Terminal 2: `npx playwright test`  → **[SHOW]** red, failed
+**[SAY]** "And the suite goes red. Look at the error — `Locator: getByTestId('login-submit')` … element(s) not found. The test is hunting for an id that no longer exists. Today this is a human's afternoon. Instead —"
 
 **[DO]** Terminal 2:
 ```bash
@@ -35,12 +55,18 @@ node --env-file=.env packages/cli/dist/index.js heal \
   http://localhost:3100/login --spec tests/generated/login.spec.ts \
   --model claude-haiku-4-5 --no-pr
 ```
-**[SAY] (while it scrolls)** "— I point Argus at it. It's reading the spec, looking at the live DOM, working out what changed. And notice — it doesn't patch blindly. It triages first."
+**[SAY] (while it scrolls)** "— I point Argus at it. It reads the spec, drives the live page, and works out what changed. It doesn't patch blindly — it triages first."
 
-**[SHOW]** verdict: `dom-drift`
-**[SAY]** "There — it classified this as DOM drift. Cosmetic. The button still works, the id just moved. So it rewrites the locator, re-runs the test itself to confirm it's genuinely green, and it's done. About 30 seconds, zero human time. That's the wedge — but it's not the point."
+**[SHOW]** verdict: `dom-drift` — rationale names `login-submit` → `signin-button`
+**[SAY]** "There — DOM drift. And notice it figured out the new id was `signin-button` on its own — nothing scripted, it read the live DOM. It rewrites the locator, re-runs the test itself to confirm it's genuinely green, done. ~30 seconds, zero human time. That's the wedge — but it's not the point."
 
-**[DO]** after: `git checkout tests/generated/login.spec.ts` (reset)
+**[DO]** reset both files:
+```bash
+git checkout apps/sample-shop/src/app/login/page.tsx tests/generated/login.spec.ts
+```
+
+> **No-touch fallback (if you don't want to edit live):** start the app with the seeded flag instead —
+> `NEXT_PUBLIC_ARGUS_DEMO_DRIFT=1 pnpm --filter @argus/sample-shop dev` (renders `submit-btn`), skip the edit step, go straight to `npx playwright test` → red → heal. Reset with `git checkout tests/generated/login.spec.ts`.
 
 ---
 
@@ -86,10 +112,14 @@ NEXT_PUBLIC_ARGUS_DEMO_BUG=1 pnpm --filter @argus/sample-shop dev
 ---
 
 ## Cheat sheet (tape to the side of your screen)
-1. Terminal1 `…DEMO_DRIFT=1 … dev` → Terminal2 `npx playwright test` (red) → `heal … --no-pr` (dom-drift, green) → `git checkout tests/…`
+0. App running, NO flag: `pnpm --filter @argus/sample-shop dev`
+1. T2 `npx playwright test` (green) → edit `login/page.tsx:52` testid → `"signin-button"`, save → T2 `npx playwright test` (red) → `heal … --no-pr` (dom-drift, green) → `git checkout apps/sample-shop/src/app/login/page.tsx tests/generated/login.spec.ts`
 2. Open heal receipt → optional `treeship verify ssn_b965f6f0a82f1294`
-3. Terminal1 restart `…DEMO_BUG=1 … dev` → Terminal2 `heal …` (real-bug, refuses) → open refusal receipt
+3. T1 restart `…DEMO_BUG=1 … dev` → T2 `heal …` (real-bug, refuses) → open refusal receipt
 4. CI gate + MCP one-liner → close + pilot ask
 
 ## If a live run stalls
-Don't wait. Say "this normally takes ~30 seconds — here's one I ran earlier" and cut to the receipt tab (it's the proof anyway). The only thing that *must* be live is opening a receipt. Reset with `git checkout tests/generated/login.spec.ts` between runs.
+Don't wait. Say "this normally takes ~30 seconds — here's one I ran earlier" and cut to the receipt tab (it's the proof anyway). The only thing that *must* be live is opening a receipt. Reset with `git checkout apps/sample-shop/src/app/login/page.tsx tests/generated/login.spec.ts` between runs.
+
+## Pre-demo dry run (do this once)
+Run the whole sequence end-to-end with a timer the night before. The only wobble points are the live edit (rehearse the exact line) and the two `heal` runs. After rehearsing, confirm the tree is clean: `git status`.
