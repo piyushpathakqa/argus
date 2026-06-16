@@ -42,6 +42,23 @@ function treeshipCli(args: string[]): Promise<void> {
   });
 }
 
+/** Run a `treeship` subcommand and capture its stdout (empty string on any failure). */
+function treeshipCapture(args: string[]): Promise<string> {
+  return new Promise((resolve) => {
+    let out = '';
+    const child = spawn('treeship', args, { stdio: ['ignore', 'pipe', 'ignore'] });
+    child.stdout?.on('data', (d: Buffer) => (out += d.toString()));
+    child.on('error', () => resolve(''));
+    child.on('close', () => resolve(out));
+  });
+}
+
+/** Publish the just-closed session to the hub and return its public receipt URL (or null). */
+async function publishReceipt(): Promise<string | null> {
+  const out = await treeshipCapture(['session', 'report', '--no-color']);
+  return out.match(/https:\/\/treeship\.dev\/receipt\/\S+/)?.[0] ?? null;
+}
+
 const SMOKE_SYSTEM =
   'You are exploring a web app to understand it. Use the browser and dom tools to ' +
   'navigate, snapshot the page, list its data-testid values, and try the primary flow ' +
@@ -201,6 +218,7 @@ program
   .option('--error <text>', 'the Playwright failure message')
   .option('--no-pr', 'leave the verified fix on a local branch; do not push/open a PR')
   .option('--no-receipt', 'skip the Treeship provenance receipt')
+  .option('--no-publish', 'seal the receipt locally but do not upload it to the Treeship hub')
   .option('--model <id>', 'model id (default: primary/Opus)')
   .description(
     'Triage a failure and, only for DOM drift, rewrite the locator, verify green, and open a PR',
@@ -208,7 +226,14 @@ program
   .action(
     async (
       url: string,
-      opts: { spec: string; error?: string; pr: boolean; receipt: boolean; model?: string },
+      opts: {
+        spec: string;
+        error?: string;
+        pr: boolean;
+        receipt: boolean;
+        publish: boolean;
+        model?: string;
+      },
     ) => {
       const model = opts.model ?? resolveModel('primary');
       const slug = (opts.spec.split('/').pop() ?? 'spec').replace(/\.spec\.ts$/, '');
@@ -297,10 +322,17 @@ program
         await tree?.flush();
         if (tree) {
           await treeshipCli(['session', 'close']);
-          console.log(
-            '\n[argus] provenance receipt sealed — verify it with `treeship verify last`, ' +
-              'or publish a public, shareable receipt URL with `treeship session report`.',
-          );
+          const url = opts.publish === false ? null : await publishReceipt();
+          if (url) {
+            console.log(`\n[argus] 🔏 provenance receipt: ${url}`);
+            console.log('[argus] public, no login, independently verifiable.');
+          } else {
+            console.log(
+              '\n[argus] provenance receipt sealed — verify it with `treeship verify last`, ' +
+                'or publish a shareable URL with `treeship session report` ' +
+                '(needs `treeship hub attach` once).',
+            );
+          }
         }
         await close();
       }
