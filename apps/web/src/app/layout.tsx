@@ -10,7 +10,7 @@ const description =
   'Self-healing Playwright tests you can verify — every fix sealed in a signed, tamper-evident receipt, and it never masks a real bug.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://argusqa.dev'),
+  metadataBase: new URL('https://vigilis.dev'),
   title,
   description,
   keywords: ['QA', 'test automation', 'Playwright', 'self-healing tests', 'AI agent', 'provenance', 'attestation'],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description,
-    url: 'https://argusqa.dev',
+    url: 'https://vigilis.dev',
     siteName: 'Vigilis',
     type: 'website',
     images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Vigilis — the trust layer for autonomous testing' }],

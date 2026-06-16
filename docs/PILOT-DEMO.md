@@ -39,7 +39,7 @@ Total runtime: **8–10 minutes**, then Q&A.
 - [ ] `pnpm install && pnpm build` clean.
 - [ ] `npx playwright install chromium` done.
 - [ ] `.env` has a working `ANTHROPIC_API_KEY` (only if running A/B live; not needed for recorded).
-- [ ] Landing page loads: <https://argusqa.dev>.
+- [ ] Landing page loads: <https://vigilis.dev>.
 - [ ] Receipt loads: <https://treeship.dev/receipt/ssn_b965f6f0a82f1294> (open it once to warm it).
 - [ ] `treeship --version` works (for the live `verify` moment).
 - [ ] Recorded clips for A and B are on disk and cued.
@@ -120,7 +120,7 @@ This is the demo. Slow down here.
 ## Asset links
 
 - **Slide deck:** [`pitch/auditable-ai-qa.html`](./pitch/auditable-ai-qa.html) — open in a browser, **F** = fullscreen, **S** = speaker notes (talk track embedded), arrows to navigate. PDF handout: [`pitch/auditable-ai-qa.pdf`](./pitch/auditable-ai-qa.pdf). *Present from the HTML for best fidelity.*
-- Landing page: <https://argusqa.dev>
+- Landing page: <https://vigilis.dev>
 - Live verified receipt (drift heal): <https://treeship.dev/receipt/ssn_b965f6f0a82f1294>
 - Live verified receipt (real-bug refusal): <https://treeship.dev/receipt/ssn_3834e1bcc2651d7d>
 - Repo: <https://github.com/piyushpathakqa/argus> · technical runbook: [`DEMO.md`](./DEMO.md) · MCP: [`MCP.md`](./MCP.md) · provenance: [`TREESHIP.md`](./TREESHIP.md)
