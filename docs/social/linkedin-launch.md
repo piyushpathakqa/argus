@@ -124,3 +124,54 @@ The flagship announcement. Richer than the series teaser (post 5) — use this *
 > • A receipt where it healed drift: https://treeship.dev/receipt/ssn_b965f6f0a82f1294
 > • A receipt where it refused a real bug: https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
 > • Provenance powered by Treeship, built by @Zerker Lab — thanks @Revaz 🙏
+
+---
+
+## Version D — FINAL (Vigilis, npm-published) ⭐ USE THIS
+
+> AI can already heal broken tests. So I built the part it can't fake: proof.
+>
+> Today I'm open-sourcing Vigilis — the trust layer for autonomous testing.
+>
+> As AI writes more of our code, tests and guardrails become the bottleneck — and the thing you can least afford to get wrong. Frameworks now self-heal tests automatically, which is great… until you ask: if an agent rewrote my test to make it pass, how do I know it didn't quietly bury a real bug?
+>
+> Green is an outcome. Outcomes can be manufactured. What you actually want is proof.
+>
+> Vigilis runs one loop — generate → gate → triage → heal → verify:
+>
+> ✅ writes real Playwright tests from a URL
+> ✅ runs them in CI as a required gate
+> ✅ triages failures — real bug vs DOM drift vs flake
+> ✅ heals cosmetic drift, verifies green, opens a PR
+> 🛑 refuses to heal a real bug — surfaces it, never papers it over
+> 🔏 seals every run in a signed, tamper-evident receipt
+>
+> Don't take my word for it — verify a real one. Here's a run where it caught a real bug and refused to heal it:
+> 👉 https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
+>
+> Open source, and on npm:
+> → npm i -D vigilis  (the CLI)
+> → npx -y vigilis-mcp  (drive it from Claude — MCP)
+>
+> 🌐 https://vigilis.dev · 💻 https://github.com/piyushpathakqa/Vigilis
+>
+> The trust layer is powered by Treeship, built by @Zerker Lab — and the independence is the whole point: an agent signing its own logs is marking its own homework. Huge thanks to @Revaz.
+>
+> Self-healing is becoming free. Trust is the part that isn't. If you run QA — or sell it — I'd love your take. 👇
+>
+> #QA #TestAutomation #SDET #AIinTesting #OpenSource #Playwright #DevTools
+
+### First comment (links)
+> Links 👇
+> • Try it: https://vigilis.dev
+> • npm: https://www.npmjs.com/package/vigilis  ·  https://www.npmjs.com/package/vigilis-mcp
+> • Code (MIT): https://github.com/piyushpathakqa/Vigilis
+> • Heal receipt: https://treeship.dev/receipt/ssn_b965f6f0a82f1294
+> • Refusal receipt: https://treeship.dev/receipt/ssn_3834e1bcc2651d7d
+> • Provenance by Treeship, built by @Zerker Lab — thanks @Revaz 🙏
+
+### Reminders
+- LinkedIn ignores Markdown — drop the leading `>`; emphasis via line breaks/caps.
+- Replace @Zerker Lab / @Revaz with the real LinkedIn handles so they're notified.
+- Attach the hero video (the 5-step clip ending on Verify) or a receipt screenshot — native video lifts reach.
+- Reach tip: links can throttle reach; consider moving them to the first comment.
