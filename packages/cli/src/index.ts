@@ -9,6 +9,13 @@ import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { Command } from 'commander';
 import {
+  CONFIG_FILE,
+  detectPlaywrightConfig,
+  hasAnthropicKey,
+  loadArgusConfig,
+  writeArgusConfig,
+} from './config';
+import {
   composeObservers,
   ConsoleObserver,
   createAnthropicClient,
@@ -71,6 +78,37 @@ program
   .version('0.0.0');
 
 program
+  .command('init')
+  .description('Scaffold argus.config.json so you can use Argus in your own Playwright project')
+  .option('--force', 'overwrite an existing argus.config.json')
+  .action((opts: { force?: boolean }) => {
+    const cwd = process.cwd();
+
+    const pw = detectPlaywrightConfig(cwd);
+    if (pw) {
+      console.log(`[argus] detected Playwright project (${pw})`);
+    } else {
+      console.log(
+        '[argus] no playwright.config.* found here. Argus writes standard Playwright specs — ' +
+          'run `npm init playwright@latest` first if you need a Playwright setup.',
+      );
+    }
+
+    const { written, path } = writeArgusConfig(cwd, { force: opts.force });
+    if (written) console.log(`[argus] wrote ${path}`);
+    else console.log(`[argus] ${CONFIG_FILE} already exists — left untouched (use --force to overwrite).`);
+
+    console.log('\nNext steps:');
+    let n = 1;
+    if (!hasAnthropicKey(cwd)) {
+      console.log(`  ${n++}. Set ANTHROPIC_API_KEY (in .env or your shell) — needed for generate/triage/heal.`);
+    }
+    console.log(`  ${n++}. Edit ${CONFIG_FILE} (baseUrl, testDir, model) to match your app.`);
+    console.log(`  ${n++}. argus generate <url>            # explore the app and write a spec`);
+    console.log(`  ${n++}. argus heal <url> --spec <file>  # self-heal drift → verified PR + signed receipt`);
+  });
+
+program
   .command('generate')
   .argument('<url>', 'URL of the app under test')
   .option('--model <id>', 'model id (default: primary/Opus)')
@@ -86,7 +124,8 @@ program
       url: string,
       opts: { model?: string; run?: boolean; baseUrl?: string; out: string; maxSteps: string },
     ) => {
-      const model = opts.model ?? resolveModel('primary');
+      const { config, found } = loadArgusConfig(process.cwd());
+      const model = opts.model ?? (found ? config.model : undefined) ?? resolveModel('primary');
       const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = new PlaywrightTestRunner({ cwd: process.cwd() });
       try {
@@ -115,7 +154,7 @@ program
         if (opts.run && result.writtenFiles.includes(result.specPath)) {
           // baseURL the generated spec runs against: explicit flag, else the
           // origin of the target URL — so `--run` works on any app.
-          const baseUrl = opts.baseUrl ?? new URL(url).origin;
+          const baseUrl = opts.baseUrl ?? (found ? config.baseUrl : undefined) ?? new URL(url).origin;
           process.env.ARGUS_BASE_URL = baseUrl;
           console.log(`\n[argus] running ${result.specPath} against ${baseUrl} …`);
           const tr = await runner.run(result.specPath);
@@ -172,7 +211,8 @@ program
         return;
       }
 
-      const model = opts.model ?? resolveModel('primary');
+      const cfg = loadArgusConfig(process.cwd());
+      const model = opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
       const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = new PlaywrightTestRunner({ cwd: process.cwd() });
       try {
@@ -235,7 +275,8 @@ program
         model?: string;
       },
     ) => {
-      const model = opts.model ?? resolveModel('primary');
+      const cfg = loadArgusConfig(process.cwd());
+      const model = opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
       const slug = (opts.spec.split('/').pop() ?? 'spec').replace(/\.spec\.ts$/, '');
       const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = new PlaywrightTestRunner({ cwd: process.cwd() });

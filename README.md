@@ -93,14 +93,25 @@ On `dom-drift` it rewrites the locator, **re-runs to verify green**, and opens a
 (`NEXT_PUBLIC_ARGUS_DEMO_BUG=1`) it refuses and blocks the gate — Argus improves signal, it doesn't
 hide failures.
 
-### Use it on your own app
+### Use it in your own Playwright project
 
-Point `generate`/`triage`/`heal` at any URL; `--base-url` runs generated specs against any host:
+`argus init` scaffolds an `argus.config.json` so `generate`/`triage`/`heal` pick up your
+project's defaults (`baseUrl`, `testDir`, `model`) — explicit flags always override it:
+
+```bash
+node --env-file=.env packages/cli/dist/index.js init   # detects playwright.config.*, writes argus.config.json
+node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/login --run
+```
+
+Or point any command at any URL directly; `--base-url` runs generated specs against any host:
 
 ```bash
 node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/login \
   --run --base-url https://your-app.com
 ```
+
+> Generated files are plain Playwright specs — copy them into your repo's test folder and own
+> them like any other test. (An `npm install`-able `argus` package is on the roadmap.)
 
 ### Drive it from Claude Desktop / Code (MCP)
 
