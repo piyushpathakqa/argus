@@ -66,8 +66,8 @@ export interface RunnerOpts {
 export interface FrameworkAdapter {
   readonly name: Framework;
 
-  /** Confidence (0..1) that this is the project's framework, from deps + config files in cwd. */
-  detect(cwd: string): Promise<number>;
+  // Note: detection is centralised in `detect.ts` (detectFramework/pickFramework),
+  // not a method on the adapter — adapters do not self-detect.
 
   /** Map a URL to the spec file path this framework expects (extension + dir conventions). */
   specPathForUrl(url: string, outDir?: string): string;
