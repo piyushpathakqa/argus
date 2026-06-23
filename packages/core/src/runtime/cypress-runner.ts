@@ -1,6 +1,6 @@
-import { spawn } from 'node:child_process';
 import type { TestRunner, TestRunResult } from '../tools/types';
-import type { Exec, ExecResult } from './playwright-runner';
+import { defaultExec } from './exec';
+import type { Exec, ExecResult } from './exec';
 
 export interface CypressStats {
   tests?: number;
@@ -50,17 +50,6 @@ export function extractJsonBlob(stdout: string): string {
   const end = stdout.lastIndexOf('}');
   return start >= 0 && end > start ? stdout.slice(start, end + 1) : '{}';
 }
-
-const defaultExec: Exec = (cmd, args, opts) =>
-  new Promise<ExecResult>((resolve, reject) => {
-    const child = spawn(cmd, args, { cwd: opts.cwd });
-    let stdout = '';
-    let stderr = '';
-    child.stdout.on('data', (d) => (stdout += String(d)));
-    child.stderr.on('data', (d) => (stderr += String(d)));
-    child.on('error', reject);
-    child.on('close', (code) => resolve({ stdout, stderr, code }));
-  });
 
 export interface CypressTestRunnerOptions {
   cwd: string;

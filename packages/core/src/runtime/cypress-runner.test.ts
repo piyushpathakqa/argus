@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCypressJson, extractCypressFailures, type CypressMochaReport } from './cypress-runner';
+import { parseCypressJson, extractCypressFailures, extractJsonBlob, type CypressMochaReport } from './cypress-runner';
 
 const report: CypressMochaReport = {
   stats: { tests: 3, passes: 2, pending: 1, failures: 1 },
@@ -35,5 +35,19 @@ describe('extractCypressFailures', () => {
 
   it('is empty when there are no failures', () => {
     expect(extractCypressFailures({ stats: { tests: 1, passes: 1, pending: 0, failures: 0 } })).toEqual([]);
+  });
+});
+
+describe('extractJsonBlob', () => {
+  it('extracts the outermost JSON object from surrounding noise', () => {
+    expect(extractJsonBlob('noise before { "a": 1 } noise after')).toBe('{ "a": 1 }');
+  });
+
+  it('returns {} when there are no braces', () => {
+    expect(extractJsonBlob('no braces here')).toBe('{}');
+  });
+
+  it('returns {} for an empty string', () => {
+    expect(extractJsonBlob('')).toBe('{}');
   });
 });
