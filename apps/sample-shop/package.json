@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start -p 3100",
     "typecheck": "tsc --noEmit",
-    "cy:run": "cypress run --reporter json"
+    "cy:run": "cypress run --reporter json",
+    "selenium:run": "mocha --reporter json"
   },
   "dependencies": {
     "next": "^15.1.6",
@@ -20,6 +21,9 @@
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "cypress": "^13"
+    "cypress": "^13",
+    "mocha": "^10",
+    "selenium-webdriver": "^4",
+    "tsx": "^4"
   }
 }
