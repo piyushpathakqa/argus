@@ -1,4 +1,4 @@
-import { readFile as fsReadFile } from 'node:fs/promises';
+import { readFile as fsReadFile, access } from 'node:fs/promises';
 import { join } from 'node:path';
 import { FRAMEWORKS, type Framework } from './types';
 
@@ -10,12 +10,7 @@ export interface DetectFs {
 const nodeFs: DetectFs = {
   readFile: (p) => fsReadFile(p, 'utf8'),
   exists: async (p) => {
-    try {
-      await fsReadFile(p);
-      return true;
-    } catch {
-      return false;
-    }
+    try { await access(p); return true; } catch { return false; }
   },
 };
 

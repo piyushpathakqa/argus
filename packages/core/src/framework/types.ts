@@ -17,8 +17,6 @@ export interface RunnerOpts {
  */
 export interface FrameworkAdapter {
   readonly name: Framework;
-  /** Confidence (0..1) that this is the project's framework, from deps + config files in cwd. */
-  detect(cwd: string): Promise<number>;
   /** Map a URL to the spec file path this framework expects. */
   specPathForUrl(url: string, outDir?: string): string;
   /** Framework-specific fragment injected into the generate system prompt. */

@@ -14,6 +14,12 @@ const ADAPTERS: Partial<Record<Framework, () => FrameworkAdapter>> = {
 export async function resolveAdapter(cwd: string, override?: Framework): Promise<FrameworkAdapter> {
   const chosen = override ?? pickFramework(await detectFramework(cwd)) ?? 'playwright';
   const make = ADAPTERS[chosen];
-  if (!make) throw new Error(`Framework "${chosen}" is detected but its adapter is not built yet.`);
+  if (!make) {
+    const source = override ? 'requested' : 'detected';
+    throw new Error(
+      `Framework "${chosen}" was ${source} but its adapter is not yet implemented. ` +
+      `Supported: ${Object.keys(ADAPTERS).join(', ')}.`,
+    );
+  }
   return make();
 }

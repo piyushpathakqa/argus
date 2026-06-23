@@ -41,4 +41,11 @@ describe('detectFramework', () => {
     // playwright matches dep + config (higher) vs cypress dep only
     expect(pickFramework(await detectFramework('/app', fs))).toBe('playwright');
   });
+
+  it('returns empty scores and null framework when package.json is missing and no config files exist', async () => {
+    const fs = fakeFs({});
+    const scores = await detectFramework('/app', fs);
+    expect(scores).toEqual([]);
+    expect(pickFramework(scores)).toBeNull();
+  });
 });

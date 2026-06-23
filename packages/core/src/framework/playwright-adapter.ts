@@ -38,10 +38,6 @@ const GENERATE_GUIDANCE = [
 export class PlaywrightAdapter implements FrameworkAdapter {
   readonly name = 'playwright' as const;
 
-  async detect(): Promise<number> {
-    return 1; // detection is centralised in detect.ts; adapter self-detect is a convenience.
-  }
-
   specPathForUrl(url: string, outDir?: string): string {
     return specPathForUrl(url, outDir);
   }
