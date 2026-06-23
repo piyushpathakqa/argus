@@ -75,12 +75,12 @@ const SMOKE_SYSTEM =
 
 program
   .name('vigilis')
-  .description('Agentic QA: author, generate, triage, and self-heal Playwright tests.')
-  .version('0.1.0');
+  .description('Agentic QA: author, generate, triage, and self-heal Playwright, Cypress & Selenium tests.')
+  .version('0.2.0');
 
 program
   .command('init')
-  .description('Scaffold vigilis.config.json so you can use Vigilis in your own Playwright project')
+  .description('Scaffold vigilis.config.json so you can use Vigilis in your own Playwright, Cypress, or Selenium project')
   .option('--force', 'overwrite an existing vigilis.config.json')
   .action((opts: { force?: boolean }) => {
     const cwd = process.cwd();
@@ -90,8 +90,8 @@ program
       console.log(`[vigilis] detected Playwright project (${pw})`);
     } else {
       console.log(
-        '[vigilis] no playwright.config.* found here. Vigilis writes standard Playwright specs — ' +
-          'run `npm init playwright@latest` first if you need a Playwright setup.',
+        '[vigilis] no playwright.config.* found here. Vigilis works with Playwright, Cypress, or Selenium — ' +
+          'run `npm init playwright@latest` first if you need a Playwright setup, or set --framework in your config.',
       );
     }
 
