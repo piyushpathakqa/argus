@@ -3,7 +3,7 @@
 import { motion } from 'motion/react';
 
 const STAGES = [
-  { k: 'Generate', d: 'URL in, Playwright spec out.' },
+  { k: 'Generate', d: 'URL in, runnable spec out — Playwright, Cypress, or Selenium.' },
   { k: 'Gate', d: 'Runs in CI — failing tests block the deploy.' },
   { k: 'Triage', d: 'Classifies every failure: real bug, DOM drift, or flake.' },
   { k: 'Heal', d: 'Safe drift gets a verified fix PR. Real regressions do not.' },

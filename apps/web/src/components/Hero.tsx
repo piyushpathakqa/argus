@@ -28,11 +28,12 @@ export function Hero() {
         {...fade(0.16)}
         className="mt-4 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl"
       >
-        The AI agent that writes your Playwright tests — and fixes the ones your UI breaks.
+        The AI agent that writes your end-to-end tests — and fixes the ones your UI breaks.
       </motion.h2>
       <motion.p {...fade(0.24)} className="mt-4 max-w-2xl text-lg text-[var(--color-muted)]">
-        Vigilis writes specs from a URL, runs them in CI, heals safe UI drift, and opens reviewable
-        PRs. When behaviour changes, it{' '}
+        Vigilis detects your framework — <span className="text-[var(--color-ink)]">Playwright,
+        Cypress, or Selenium</span> — then writes specs from a URL, runs them in CI, heals safe UI
+        drift, and opens reviewable PRs. When behaviour changes, it{' '}
         <span className="text-[var(--color-ink)]">fails loudly</span>.
       </motion.p>
       <motion.ul {...fade(0.3)} className="mt-7 flex flex-wrap justify-center gap-2">
@@ -47,6 +48,14 @@ export function Hero() {
           ),
         )}
       </motion.ul>
+      <motion.p
+        {...fade(0.34)}
+        className="mt-5 font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]"
+      >
+        Works with <span className="text-[var(--color-cyan)]">Playwright</span> ·{' '}
+        <span className="text-[var(--color-cyan)]">Cypress</span> ·{' '}
+        <span className="text-[var(--color-cyan)]">Selenium</span>
+      </motion.p>
       <motion.div {...fade(0.38)} className="mt-8 flex gap-4">
         <a
           href="https://github.com/piyushpathakqa/Vigilis"
