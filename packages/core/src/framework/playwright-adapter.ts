@@ -21,8 +21,6 @@ function specPathForUrl(url: string, outDir = 'tests/generated'): string {
 }
 
 const GENERATE_GUIDANCE = [
-  'Write ONE runnable Playwright end-to-end test for the web app at the given URL.',
-  '',
   'The spec MUST:',
   "- import { test, expect } from '@playwright/test';",
   '- use getByTestId(...) locators (never brittle text or CSS-structure selectors);',

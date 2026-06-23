@@ -6,11 +6,9 @@ import type { ToolRegistry } from '../tools/registry';
 import type { ToolContext } from '../tools/types';
 import { PlaywrightAdapter } from '../framework/playwright-adapter';
 
-const defaultAdapter = new PlaywrightAdapter();
-
 /** @deprecated prefer ctx.adapter.specPathForUrl — kept for back-compat. */
 export function specPathForUrl(url: string, outDir = 'tests/generated'): string {
-  return defaultAdapter.specPathForUrl(url, outDir);
+  return new PlaywrightAdapter().specPathForUrl(url, outDir);
 }
 
 export interface GenerateOptions {
