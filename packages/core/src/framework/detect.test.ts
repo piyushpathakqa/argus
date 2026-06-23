@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest';
+import type { DetectFs } from './detect';
 import { detectFramework, pickFramework } from './detect';
 
-const fakeFs = (files: Record<string, string>) => ({
-  readFile: async (p: string) => {
-    if (p in files) return files[p];
-    throw new Error('ENOENT');
+const fakeFs = (files: Record<string, string>): DetectFs => ({
+  readFile: async (p: string): Promise<string> => {
+    const v = files[p];
+    if (v === undefined) throw new Error('ENOENT');
+    return v;
   },
   exists: async (p: string) => p in files,
 });
