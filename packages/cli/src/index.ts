@@ -122,7 +122,7 @@ program
   .option('--model <id>', 'model id (default: primary/Opus)')
   .option('--run', 'run the generated spec after writing it')
   .option('--base-url <url>', 'base URL for running the spec (default: origin of <url>)')
-  .option('--out <dir>', 'output directory for the spec', 'tests/generated')
+  .option('--out <dir>', 'output directory for the spec (default: framework convention)')
   .option('--max-steps <n>', 'max agent steps', '20')
   .option(
     '--framework <name>',
@@ -138,7 +138,7 @@ program
         model?: string;
         run?: boolean;
         baseUrl?: string;
-        out: string;
+        out?: string;
         maxSteps: string;
         framework?: string;
       },
