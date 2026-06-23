@@ -19,7 +19,7 @@ const MARKUP = `
 <header class="hero">
   <div class="wrap">
     <span class="tag"><span class="dot"></span>Open-source · self-healing QA · CLI + MCP · MIT</span>
-    <h1>The QA agent that proves it <span class="strike">hid your bug</span> didn't.</h1>
+    <h1>Self-healing QA that refuses to hide a <span class="red">real bug</span>.</h1>
     <p class="sub">Point it at <b>the brittle Cypress, Selenium, or Playwright suite you already have</b>. Vigilis heals the drift, gates every run on signed evidence, and stays fail-closed so it <b>never papers over a real bug</b>.</p>
 
     <div class="hero-cta">

@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-const title = "Vigilis · the QA agent that proves it didn't hide your bug";
+const title = 'Vigilis · self-healing QA that refuses to hide a real bug';
 const description =
   'Point it at the brittle Cypress, Selenium, or Playwright suite you already have. Vigilis heals the drift, gates every run on signed evidence, and stays fail-closed so it never papers over a real bug.';
 
