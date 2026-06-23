@@ -145,8 +145,8 @@ program
     ) => {
       const { config, found } = loadVigilisConfig(process.cwd());
       const model = opts.model ?? (found ? config.model : undefined) ?? resolveModel('primary');
-      const { session, close } = await createPlaywrightSession({ headless: true });
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
+      const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = adapter.createRunner({ cwd: process.cwd() });
       try {
         const result = await generate({
@@ -239,8 +239,8 @@ program
       const cfg = loadVigilisConfig(process.cwd());
       const model =
         opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
-      const { session, close } = await createPlaywrightSession({ headless: true });
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
+      const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = adapter.createRunner({ cwd: process.cwd() });
       try {
         const result = await triage({
@@ -311,8 +311,8 @@ program
       const model =
         opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
       const slug = (opts.spec.split('/').pop() ?? 'spec').replace(/\.spec\.ts$/, '');
-      const { session, close } = await createPlaywrightSession({ headless: true });
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
+      const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = adapter.createRunner({ cwd: process.cwd() });
       const ctx = { workspaceRoot: process.cwd(), browser: session, runner, adapter };
 
@@ -434,8 +434,8 @@ program
     ) => {
       const model = opts.model ?? resolveModel('fast');
       const isOpusTier = /opus|sonnet-4-6|fable/.test(model);
-      const { session, close } = await createPlaywrightSession({ headless: !opts.headed });
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
+      const { session, close } = await createPlaywrightSession({ headless: !opts.headed });
       try {
         const result = await runAgentLoop({
           client: createAnthropicClient(),
