@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseMochaJson, extractMochaFailures, type MochaReport } from './mocha-json';
+import { parseMochaJson, extractMochaFailures, reportHasNoStats, type MochaReport } from './mocha-json';
 
 const report: MochaReport = {
   stats: { tests: 3, passes: 2, pending: 1, failures: 1 },
@@ -30,5 +30,15 @@ describe('extractMochaFailures', () => {
     expect(extractMochaFailures(report)).toEqual([
       { specPath: 'tests/selenium/cart.test.ts', title: 'cart adds item', error: 'no pay button' },
     ]);
+  });
+});
+
+describe('reportHasNoStats', () => {
+  it('returns true when stats are present but tests === 0 (zero-tests false-green guard)', () => {
+    expect(reportHasNoStats({ stats: { tests: 0, passes: 0, failures: 0 } })).toBe(true);
+  });
+
+  it('returns false when at least one test was collected', () => {
+    expect(reportHasNoStats({ stats: { tests: 2, passes: 2, failures: 0 } })).toBe(false);
   });
 });

@@ -42,7 +42,8 @@ export function parseMochaJson(report: MochaReport, artifactsDir: string): TestR
   return { passed, failed, summary: parts.join(', '), artifactsDir };
 }
 
-/** True when a report carries no usable stats — callers should treat this as a failure. */
+/** True when a report has no usable stats, or zero tests collected — treat as a failure.
+ *  Catches both the "stats absent/empty" case and the "stats: { tests: 0 }" false-green. */
 export function reportHasNoStats(report: MochaReport): boolean {
-  return !report.stats || Object.keys(report.stats).length === 0;
+  return !report.stats || Object.keys(report.stats).length === 0 || (report.stats.tests ?? 0) === 0;
 }

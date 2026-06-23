@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import type { TestRunner, TestRunResult } from '../tools/types';
 import { defaultExec } from './exec';
 import type { Exec } from './exec';
-import { parseMochaJson, extractMochaFailures, reportHasNoStats, type MochaReport } from './mocha-json';
+import { parseMochaJson, reportHasNoStats, type MochaReport } from './mocha-json';
 
 // back-compat aliases (SP2 imported these names from this module):
 export { parseMochaJson as parseCypressJson, extractMochaFailures as extractCypressFailures } from './mocha-json';
