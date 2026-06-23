@@ -1,12 +1,13 @@
 import { detectFramework, pickFramework } from './detect';
 import { CypressAdapter } from './cypress-adapter';
 import { PlaywrightAdapter } from './playwright-adapter';
+import { SeleniumAdapter } from './selenium-adapter';
 import type { Framework, FrameworkAdapter } from './types';
 
 const ADAPTERS: Partial<Record<Framework, () => FrameworkAdapter>> = {
   playwright: () => new PlaywrightAdapter(),
   cypress: () => new CypressAdapter(),
-  // selenium lands in SP3
+  selenium: () => new SeleniumAdapter(),
 };
 
 /**

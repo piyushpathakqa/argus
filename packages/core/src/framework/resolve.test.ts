@@ -12,7 +12,8 @@ describe('resolveAdapter', () => {
     expect(a.name).toBe('playwright');
   });
 
-  it('still throws a clear error for the not-yet-built selenium adapter', async () => {
-    await expect(resolveAdapter(process.cwd(), 'selenium')).rejects.toThrow(/not yet implemented/);
+  it('returns the SeleniumAdapter for an explicit selenium override', async () => {
+    const a = await resolveAdapter(process.cwd(), 'selenium');
+    expect(a.name).toBe('selenium');
   });
 });
