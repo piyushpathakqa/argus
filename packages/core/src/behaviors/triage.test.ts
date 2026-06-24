@@ -86,7 +86,7 @@ describe('triage', () => {
       const wrappedClient = {
         messages: {
           create: async (body: Parameters<typeof client.messages.create>[0]) => {
-            capturedSystems.push(body.system ?? '');
+            capturedSystems.push(typeof body.system === 'string' ? body.system : '');
             return client.messages.create(body);
           },
         },
@@ -156,7 +156,7 @@ describe('triage', () => {
       const wrappedClient = {
         messages: {
           create: async (body: Parameters<typeof client.messages.create>[0]) => {
-            capturedSystems.push(body.system ?? '');
+            capturedSystems.push(typeof body.system === 'string' ? body.system : '');
             return client.messages.create(body);
           },
         },

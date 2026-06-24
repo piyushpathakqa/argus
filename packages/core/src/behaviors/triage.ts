@@ -141,12 +141,13 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
 
   // Best-effort record — never throws, never alters the returned result
   if (verdict) {
+    const v: Verdict = verdict;
     await memory.record({
       specPath,
       url,
-      verdict: verdict.verdict,
-      rationale: verdict.rationale,
-      suggestedSelector: verdict.suggestedSelector,
+      verdict: v.verdict,
+      rationale: v.rationale,
+      suggestedSelector: v.suggestedSelector,
     });
   }
 
