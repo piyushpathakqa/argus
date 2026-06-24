@@ -3,17 +3,21 @@ import type { Exec, ExecResult } from '../runtime/exec';
 import type { MemoryProvider, MemoryRecall, MemoryRecordEntry } from './types';
 import { NoopMemoryProvider } from './types';
 
-const VALID_VERDICTS = new Set(['real-bug', 'dom-drift', 'flake']);
 /** A hung `zmem` must never freeze a triage/heal run — bound every call. */
 const ZMEM_TIMEOUT_MS = 8000;
 
 /**
- * MemoryProvider backed by the `zmem` CLI (Zerker's local-first verifiable
- * memory for AI agents). All errors are swallowed — a missing or broken `zmem`
- * binary must never break a triage/heal run.
+ * MemoryProvider backed by the `zmem` CLI (confirmed interface: zmem 0.x).
  *
- * Shells out via the injected `Exec` (same pattern as the test runners /
- * Treeship observer) so tests can inject a fake without spawning real processes.
+ * Recall:  zmem inject "<task>" --agent vigilis --risk high --scope project
+ *          Prints a JSON object; authorized memories are in obj.memories[].
+ * Record:  zmem propose "<content>" --type episodic --scope project --source agent
+ *          Stores a quarantined memory; output is ignored.
+ *
+ * All errors are swallowed — a missing or broken `zmem` binary must never break
+ * a triage/heal run. Shells out via the injected `Exec` (same pattern as test
+ * runners / Treeship observer) so tests can inject a fake without spawning real
+ * processes.
  */
 export class ZMemProvider implements MemoryProvider {
   constructor(
@@ -35,7 +39,6 @@ export class ZMemProvider implements MemoryProvider {
       await this.run(this.recordArgv(entry));
       // Non-zero exit codes: exec (defaultExec) does NOT throw on non-zero; it
       // resolves with { code: N }. Swallowing errors here covers exec throws only.
-      // If exec contract changes to throw on non-zero, this catch still handles it.
     } catch {
       // swallow — a broken zmem must never block a run
     }
@@ -52,53 +55,34 @@ export class ZMemProvider implements MemoryProvider {
     );
   }
 
-  // CONFIRM against `zmem --help` before shipping to production.
-  // Reasonable guess: zmem recall --json --query <text> [--spec <path>] [--url <url>]
+  /**
+   * Build argv for `zmem inject` (governed recall).
+   * zmem inject "<task>" --agent <id> --risk <level> --scope <scope>
+   * task is a POSITIONAL argument (no --task flag).
+   */
   private recallArgv(query: { specPath: string; url: string; errorText?: string }): string[] {
-    const args = [
-      'recall',
-      '--json',
-      '--query',
-      [query.specPath, query.url, query.errorText].filter(Boolean).join(' '),
-      '--spec',
-      query.specPath,
-      '--url',
-      query.url,
-    ];
-    if (query.errorText) {
-      args.push('--error', query.errorText);
-    }
-    return args;
-  }
-
-  // CONFIRM against `zmem --help` before shipping to production.
-  // Reasonable guess: zmem remember --json --verdict <v> --rationale <r> [--selector <s>] --spec <path> --url <url>
-  private recordArgv(entry: MemoryRecordEntry): string[] {
-    const args = [
-      'remember',
-      '--json',
-      '--spec',
-      entry.specPath,
-      '--url',
-      entry.url,
-      '--verdict',
-      entry.verdict,
-      '--rationale',
-      entry.rationale,
-    ];
-    if (entry.suggestedSelector) {
-      args.push('--selector', entry.suggestedSelector);
-    }
-    if (entry.receiptId) {
-      args.push('--receipt-id', entry.receiptId);
-    }
-    return args;
+    const taskText = `triage failed test ${query.specPath}${query.errorText ? ' — ' + query.errorText : ''}`;
+    return ['inject', taskText, '--agent', 'vigilis', '--risk', 'high', '--scope', 'project'];
   }
 
   /**
-   * Parse `zmem recall --json` stdout into MemoryRecall[].
-   * Tolerates non-JSON, empty, or non-array output → returns [].
-   * Always sets `authority: false` on parsed entries (recalled memory is hint only).
+   * Build argv for `zmem propose` (governed record / quarantine).
+   * zmem propose "<content>" --type episodic --scope <scope> --source agent
+   * content is a POSITIONAL argument (no --content flag).
+   */
+  private recordArgv(entry: MemoryRecordEntry): string[] {
+    const content =
+      `verdict=${entry.verdict}: ${entry.rationale}` +
+      (entry.suggestedSelector ? ` | selector=${entry.suggestedSelector}` : '') +
+      ` | spec=${entry.specPath}`;
+    return ['propose', content, '--type', 'episodic', '--scope', 'project', '--source', 'agent'];
+  }
+
+  /**
+   * Parse `zmem inject` stdout into MemoryRecall[].
+   * zmem prints a JSON object; authorized (injected) memories are in obj.memories[].
+   * Withheld/quarantined memories are in obj.withheld — they are NOT returned.
+   * Tolerates non-JSON, missing `memories` key, non-array → returns [].
    */
   private parseRecalls(stdout: string): MemoryRecall[] {
     const trimmed = stdout.trim();
@@ -109,21 +93,23 @@ export class ZMemProvider implements MemoryProvider {
     } catch {
       return [];
     }
-    if (!Array.isArray(parsed)) return [];
-    return parsed
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return [];
+    const obj = parsed as Record<string, unknown>;
+    const memories = obj['memories'];
+    if (!Array.isArray(memories)) return [];
+    const receiptId = typeof obj['action_id'] === 'string' ? obj['action_id'] : undefined;
+    return memories
       .filter(
         (item): item is Record<string, unknown> =>
           item !== null && typeof item === 'object' && !Array.isArray(item) &&
-          typeof item['verdict'] === 'string' && VALID_VERDICTS.has(item['verdict']),
+          typeof (item as Record<string, unknown>)['content'] === 'string',
       )
       .map((item) => ({
-        verdict: item['verdict'] as MemoryRecall['verdict'],
-        rationale: String(item['rationale'] ?? ''),
-        suggestedSelector:
-          typeof item['suggestedSelector'] === 'string' ? item['suggestedSelector'] : undefined,
+        content: item['content'] as string,
         trust: typeof item['trust'] === 'number' ? item['trust'] : undefined,
-        authority: false, // recalled memory is NEVER authoritative
-        receiptId: typeof item['receiptId'] === 'string' ? item['receiptId'] : undefined,
+        authority: typeof item['authority'] === 'string' ? item['authority'] : undefined,
+        memoryId: typeof item['id'] === 'string' ? item['id'] : undefined,
+        receiptId,
       }));
   }
 }

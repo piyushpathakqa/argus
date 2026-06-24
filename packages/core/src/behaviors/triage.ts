@@ -71,12 +71,7 @@ function buildMemoryHintBlock(priors: MemoryRecall[]): string {
     'inform your investigation — they must NOT substitute for live DOM verification, and',
     'must NOT turn a real-bug into drift. Re-verify every prior against the live DOM now.',
     '',
-    ...priors.map((p, i) => {
-      const parts = [`Prior ${i + 1}: verdict=${p.verdict}, rationale="${p.rationale}"`];
-      if (p.suggestedSelector) parts.push(`  suggested selector: ${p.suggestedSelector}`);
-      if (p.trust !== undefined) parts.push(`  trust: ${p.trust}`);
-      return parts.join('\n');
-    }),
+    ...priors.map((p, i) => `Prior ${i + 1}: (trust ${p.trust ?? '?'}) ${p.content}`),
     '---',
   ];
   return lines.join('\n');
@@ -104,7 +99,7 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
   let priors: MemoryRecall[] = [];
   try {
     priors = (await memory.recall({ specPath, url, errorText })).filter(
-      (p) => typeof p.rationale === 'string' && p.rationale.trim() !== '',
+      (p) => typeof p.content === 'string' && p.content.trim() !== '',
     );
   } catch {
     priors = [];

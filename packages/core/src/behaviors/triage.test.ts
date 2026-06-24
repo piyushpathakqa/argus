@@ -118,12 +118,13 @@ describe('triage', () => {
       const capturedSystems: string[] = [];
       const recordedEntries: MemoryRecordEntry[] = [];
 
+      // New MemoryRecall shape: free-text content from zmem
       const fakePrior: MemoryRecall = {
-        verdict: 'dom-drift',
-        rationale: 'testid was login-submit, is now submit-btn',
-        suggestedSelector: '[data-testid="submit-btn"]',
+        content: 'verdict=dom-drift: testid was login-submit, is now submit-btn | selector=[data-testid="submit-btn"] | spec=tests/login.spec.ts',
         trust: 0.85,
-        authority: false,
+        authority: 'medium',
+        memoryId: 'mem_abc123',
+        receiptId: 'act_def456',
       };
 
       const fakeProvider: MemoryProvider = {
@@ -175,15 +176,64 @@ describe('triage', () => {
       expect(capturedSystems[0]).toContain('PRIOR GOVERNED MEMORY');
       expect(capturedSystems[0]).toContain('NOT authority');
       expect(capturedSystems[0]).toContain('re-verify against the live DOM');
-      expect(capturedSystems[0]).toContain('dom-drift');
-      expect(capturedSystems[0]).toContain('testid was login-submit, is now submit-btn');
+      // The hint must render the content and trust from the new shape
+      expect(capturedSystems[0]).toContain('(trust 0.85)');
+      expect(capturedSystems[0]).toContain('verdict=dom-drift: testid was login-submit');
 
-      // record must have been called once with the verdict
+      // record must have been called once with the verdict (MemoryRecordEntry shape unchanged)
       expect(recordedEntries).toHaveLength(1);
       expect(recordedEntries[0]!.verdict).toBe('dom-drift');
       expect(recordedEntries[0]!.rationale).toBe('testid changed');
       expect(recordedEntries[0]!.specPath).toBe('tests/generated/login.spec.ts');
       expect(recordedEntries[0]!.url).toBe('http://localhost:3100/login');
+
+      expect(result.verdict?.verdict).toBe('dom-drift');
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('filters out priors with empty content before injecting hint block', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'argus-triage-filter-'));
+    try {
+      await mkdir(join(root, 'tests/generated'), { recursive: true });
+      await writeFile(join(root, 'tests/generated/login.spec.ts'), '// spec', 'utf8');
+
+      const capturedSystems: string[] = [];
+
+      const fakeProvider: MemoryProvider = {
+        // Returns one prior with empty content — should be filtered out
+        recall: async (_query) => [{ content: '   ' }],
+        record: async () => {},
+      };
+
+      const client = new FakeAnthropicClient([
+        makeMessage(
+          [{ type: 'tool_use', id: 't1', name: 'report_verdict', input: { verdict: 'flake', confidence: 'low', rationale: 'transient' } }],
+          'tool_use',
+        ),
+        makeMessage([{ type: 'text', text: 'Done.' }], 'end_turn'),
+      ]);
+
+      const wrappedClient = {
+        messages: {
+          create: async (body: Parameters<typeof client.messages.create>[0]) => {
+            capturedSystems.push(typeof body.system === 'string' ? body.system : '');
+            return client.messages.create(body);
+          },
+        },
+      };
+
+      await triage({
+        client: wrappedClient,
+        specPath: 'tests/generated/login.spec.ts',
+        url: 'http://localhost:3100/login',
+        ctx: makeFakeCtx({ workspaceRoot: root }),
+        memory: fakeProvider,
+      });
+
+      // Priors with whitespace-only content must be filtered → no hint block injected
+      expect(capturedSystems[0]).not.toContain('PRIOR GOVERNED MEMORY');
     } finally {
       await rm(root, { recursive: true, force: true });
     }

@@ -2,23 +2,20 @@
 export type Verdict = 'real-bug' | 'dom-drift' | 'flake';
 
 /**
- * A single prior governed memory recalled from the memory backend.
- * This is HINT ONLY — it is injected as prompt context and must never
- * directly branch decision logic.
+ * A single prior governed memory recalled from the memory backend (zmem inject).
+ * `content` is the opaque free-text recalled string from zmem — it is HINT ONLY.
+ * It must never directly branch decision logic; inject as prompt context only.
  */
 export interface MemoryRecall {
-  verdict: Verdict;
-  rationale: string;
-  suggestedSelector?: string;
-  /** Confidence value 0..1 from ZMem's trust model. */
+  /** The remembered text recalled from zmem (free-form string). */
+  content: string;
+  /** Confidence value 0..1 from zmem's trust model. */
   trust?: number;
-  /**
-   * Whether the memory backend has authorized this recall to influence the
-   * decision. Always false for recalled data — the live DOM re-verification
-   * and conservative classifier own the verdict.
-   */
-  authority?: boolean;
-  /** ZMem/Treeship receipt ID for the remembered decision. */
+  /** zmem authority level: none | low | medium | high. */
+  authority?: string;
+  /** zmem memory id (e.g. mem_2386db3713eb4338). */
+  memoryId?: string;
+  /** zmem inject action_id — the receipt for this recall. */
   receiptId?: string;
 }
 
