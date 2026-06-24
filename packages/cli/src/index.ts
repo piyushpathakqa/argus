@@ -28,6 +28,7 @@ import {
   generate,
   heal,
   resolveAdapter,
+  resolveMemoryProvider,
   resolveModel,
   runAgentLoop,
   triage,
@@ -209,13 +210,14 @@ program
     '--framework <name>',
     'test framework: playwright | cypress | selenium (default: auto-detect)',
   )
+  .option('--memory <mode>', 'memory backend: off | auto | zmem (default: auto)')
   .description(
     'Classify a failed test: real-bug, DOM drift, or flake (needs ANTHROPIC_API_KEY + chromium)',
   )
   .action(
     async (
       url: string,
-      opts: { spec?: string; error?: string; report?: string; model?: string; framework?: string },
+      opts: { spec?: string; error?: string; report?: string; model?: string; framework?: string; memory?: string },
     ) => {
       let specPath = opts.spec;
       let errorText = opts.error;
@@ -239,6 +241,8 @@ program
       const cfg = loadVigilisConfig(process.cwd());
       const model =
         opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
+      const memoryMode = (opts.memory ?? (cfg.found ? cfg.config.memory : undefined) ?? 'auto') as 'off' | 'auto' | 'zmem';
+      const memoryProvider = await resolveMemoryProvider(process.cwd(), { mode: memoryMode });
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
       const { session, close } = await createPlaywrightSession({ headless: true });
       const runner = adapter.createRunner({ cwd: process.cwd() });
@@ -251,6 +255,7 @@ program
           ctx: { workspaceRoot: process.cwd(), browser: session, runner, adapter },
           model,
           observer: new ConsoleObserver(),
+          memory: memoryProvider,
         });
         const v = result.verdict;
         if (!v) {
@@ -291,6 +296,7 @@ program
     '--framework <name>',
     'test framework: playwright | cypress | selenium (default: auto-detect)',
   )
+  .option('--memory <mode>', 'memory backend: off | auto | zmem (default: auto)')
   .description(
     'Triage a failure and, only for DOM drift, rewrite the locator, verify green, and open a PR',
   )
@@ -305,11 +311,14 @@ program
         publish: boolean;
         model?: string;
         framework?: string;
+        memory?: string;
       },
     ) => {
       const cfg = loadVigilisConfig(process.cwd());
       const model =
         opts.model ?? (cfg.found ? cfg.config.model : undefined) ?? resolveModel('primary');
+      const memoryMode = (opts.memory ?? (cfg.found ? cfg.config.memory : undefined) ?? 'auto') as 'off' | 'auto' | 'zmem';
+      const memoryProvider = await resolveMemoryProvider(process.cwd(), { mode: memoryMode });
       const slug = (opts.spec.split('/').pop() ?? 'spec').replace(/\.spec\.ts$/, '');
       const adapter = await resolveAdapter(process.cwd(), opts.framework as Framework | undefined);
       const { session, close } = await createPlaywrightSession({ headless: true });
@@ -333,6 +342,7 @@ program
           ctx,
           model,
           observer,
+          memory: memoryProvider,
         });
         const v = t.verdict;
         console.log(`\n[vigilis] verdict: ${v ? `${v.verdict} (${v.confidence})` : 'none'}`);

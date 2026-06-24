@@ -19,6 +19,13 @@ export interface VigilisConfig {
   receipt: boolean;
   /** Chosen framework; omit to auto-detect. */
   framework?: 'playwright' | 'cypress' | 'selenium';
+  /**
+   * Memory backend mode for triage and heal.
+   * 'off'  — no memory backend; identical to pre-memory behavior.
+   * 'auto' — use zmem if it is on PATH, else no-op (default).
+   * 'zmem' — always use the zmem CLI.
+   */
+  memory?: 'off' | 'auto' | 'zmem';
 }
 
 export const CONFIG_FILE = 'vigilis.config.json';
