@@ -28,10 +28,12 @@ import {
   generate,
   heal,
   resolveAdapter,
+  resolveCloudReporter,
   resolveMemoryProvider,
   resolveModel,
   runAgentLoop,
   triage,
+  type CloudReceipt,
 } from '@argus/core';
 
 const program = new Command();
@@ -59,6 +61,25 @@ function treeshipCapture(args: string[]): Promise<string> {
     child.stdout?.on('data', (d: Buffer) => (out += d.toString()));
     child.on('error', () => resolve(''));
     child.on('close', () => resolve(out));
+  });
+}
+
+/** Best-effort git remote slug `owner/name`; undefined on any failure (never throws). */
+function repoSlug(): Promise<string | undefined> {
+  return new Promise((resolve) => {
+    let out = '';
+    const child = spawn('git', ['remote', 'get-url', 'origin'], {
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    child.stdout?.on('data', (d: Buffer) => (out += d.toString()));
+    child.on('error', () => resolve(undefined));
+    child.on('close', () => {
+      const raw = out.trim();
+      if (!raw) return resolve(undefined);
+      // Match owner/name from https://host/owner/name(.git) or git@host:owner/name(.git)
+      const m = raw.match(/[/:]([^/:]+\/[^/]+?)(?:\.git)?\/?$/);
+      resolve(m?.[1]);
+    });
   });
 }
 
@@ -332,6 +353,12 @@ program
       if (tree) await treeshipCli(['session', 'start', '--name', `vigilis heal ${slug}`]);
       const observer = composeObservers(new ConsoleObserver(), tree);
 
+      // Optional governance-cloud reporter: no-op unless VIGILIS_CLOUD_KEY is set.
+      const reporter = resolveCloudReporter();
+      // Captured across early returns so we can report exactly one receipt in finally.
+      let cloudVerdict: { verdict: string; rationale?: string; suggestedSelector?: string } | null = null;
+      let cloudHealed = false;
+
       try {
         // 1. Triage — Heal only ever runs on dom-drift.
         const t = await triage({
@@ -345,6 +372,13 @@ program
           memory: memoryProvider,
         });
         const v = t.verdict;
+        if (v) {
+          cloudVerdict = {
+            verdict: v.verdict,
+            rationale: v.rationale,
+            suggestedSelector: v.suggestedSelector,
+          };
+        }
         console.log(`\n[vigilis] verdict: ${v ? `${v.verdict} (${v.confidence})` : 'none'}`);
         if (v) console.log(`[vigilis] rationale: ${v.rationale}`);
 
@@ -369,6 +403,7 @@ program
           model,
           observer,
         });
+        cloudHealed = h.verified === true;
         if (!h.verified || h.changedFiles.length === 0) {
           console.log('[vigilis] could not produce a verified green fix; no PR opened.');
           process.exitCode = 1;
@@ -405,11 +440,12 @@ program
       } finally {
         // Seal the provenance session (records every tool call + decision above).
         await tree?.flush();
+        let receiptUrl: string | null = null;
         if (tree) {
           await treeshipCli(['session', 'close']);
-          const url = opts.publish === false ? null : await publishReceipt();
-          if (url) {
-            console.log(`\n[vigilis] 🔏 provenance receipt: ${url}`);
+          receiptUrl = opts.publish === false ? null : await publishReceipt();
+          if (receiptUrl) {
+            console.log(`\n[vigilis] 🔏 provenance receipt: ${receiptUrl}`);
             console.log('[vigilis] public, no login, independently verifiable.');
           } else {
             console.log(
@@ -419,6 +455,25 @@ program
             );
           }
         }
+
+        // Optional best-effort governance-cloud report. No-op unless a key is
+        // configured; report() never throws. Only report once we have a verdict.
+        if (cloudVerdict) {
+          const receipt: CloudReceipt = {
+            specPath: opts.spec,
+            url,
+            verdict: cloudVerdict.verdict,
+            rationale: cloudVerdict.rationale,
+            suggestedSelector: cloudVerdict.suggestedSelector,
+            healed: cloudHealed,
+            framework: adapter.name,
+            repo: await repoSlug(),
+            receiptUrl: receiptUrl ?? undefined,
+            timestamp: new Date().toISOString(),
+          };
+          await reporter.report(receipt);
+        }
+
         await close();
       }
     },

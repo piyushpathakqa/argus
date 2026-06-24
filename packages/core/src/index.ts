@@ -26,3 +26,4 @@ export * from './runtime/index';
 export * from './behaviors/index';
 export * from './framework';
 export * from './memory';
+export * from './cloud';
