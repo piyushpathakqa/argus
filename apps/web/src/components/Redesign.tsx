@@ -199,7 +199,7 @@ const MARKUP = `
       <p>M0&#8211;M3 complete: generate from a URL, gate in CI, triage a failure, self-heal drift with a PR while refusing real bugs. M4 (MCP polish and demos) in progress.</p>
     </div>
     <div class="arch reveal">
-      <div class="node surface app"><div class="lbl">App</div><h3>Vigilis</h3><p>Autonomous QA. Heals safe drift, opens PRs, fails loudly on real regressions.</p></div>
+      <div class="node surface app"><div class="lbl">Agent</div><h3>Vigilis</h3><p>Autonomous QA agent. Heals safe drift, opens PRs, fails loudly on real regressions.</p></div>
       <div class="node surface"><div class="lbl">Primitive &middot; proof</div><h3>Treeship</h3><p>Signed, offline-verifiable receipts for every heal and refusal. Provenance for what the agent did.</p></div>
       <div class="node surface"><div class="lbl">Primitive &middot; memory</div><h3>ZMem</h3><p>Governed memory: Vigilis recalls prior verdicts as hints, never as authority. Remember responsibly.</p></div>
       <div class="node surface"><div class="lbl">Lab</div><h3>Zerker Labs</h3><p>Building the primitives and apps for governed agents that take real actions in production.</p></div>
@@ -222,7 +222,6 @@ const MARKUP = `
         <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/TREESHIP.md">Receipts</a>
       </div>
     </div>
-    <p class="foot-note">MIT &middot; Built by Piyush Pathak &middot; Provenance powered by <a href="https://www.treeship.dev">Treeship</a> (Zerker Labs)</p>
   </div>
 </footer>
 
