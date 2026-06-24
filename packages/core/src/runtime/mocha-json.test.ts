@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { parseMochaJson, extractMochaFailures, reportHasNoStats, type MochaReport } from './mocha-json';
+import {
+  parseMochaJson,
+  extractMochaFailures,
+  reportHasNoStats,
+  extractMochaReportFromStdout,
+  type MochaReport,
+} from './mocha-json';
 
 const report: MochaReport = {
   stats: { tests: 3, passes: 2, pending: 1, failures: 1 },
@@ -40,5 +46,28 @@ describe('reportHasNoStats', () => {
 
   it('returns false when at least one test was collected', () => {
     expect(reportHasNoStats({ stats: { tests: 2, passes: 2, failures: 0 } })).toBe(false);
+  });
+});
+
+describe('extractMochaReportFromStdout', () => {
+  it('pulls the report object out of noisy Cypress/Mocha stdout', () => {
+    const noisy = [
+      '  (Run Starting)',
+      '  ✓ logs in (1234ms)',
+      '====================== Results ======================',
+      '{',
+      '  "stats": { "tests": 2, "passes": 2, "pending": 0, "failures": 0 },',
+      '  "tests": [], "failures": []',
+      '}',
+      '  (Run Finished)',
+    ].join('\n');
+    const r = extractMochaReportFromStdout(noisy);
+    expect(r?.stats?.passes).toBe(2);
+    expect(r?.stats?.failures).toBe(0);
+  });
+
+  it('returns null when there is no stats object in the output', () => {
+    expect(extractMochaReportFromStdout('no json here, just { a table }')).toBeNull();
+    expect(extractMochaReportFromStdout('')).toBeNull();
   });
 });

@@ -3,7 +3,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { TestRunner, TestRunResult } from '../tools/types';
 import { defaultExec, type Exec } from './exec';
-import { parseMochaJson, reportHasNoStats, type MochaReport } from './mocha-json';
+import {
+  parseMochaJson,
+  reportHasNoStats,
+  extractMochaReportFromStdout,
+  type MochaReport,
+} from './mocha-json';
 
 export interface SeleniumTestRunnerOptions {
   cwd: string;
@@ -36,15 +41,19 @@ export class SeleniumTestRunner implements TestRunner {
       '--reporter-options',
       `output=${reportPath}`,
     ];
-    await exec('npx', args, { cwd: this.opts.cwd });
+    const { stdout } = await exec('npx', args, { cwd: this.opts.cwd });
 
-    let report: MochaReport;
+    // Prefer the file; fall back to the JSON mocha prints to stdout. Fail closed otherwise.
+    let report: MochaReport | undefined;
     try {
       report = JSON.parse(await readReport(reportPath)) as MochaReport;
     } catch {
-      return failClosed;
+      report = undefined;
     }
-    if (reportHasNoStats(report)) return failClosed;
+    if (!report || reportHasNoStats(report)) {
+      report = extractMochaReportFromStdout(stdout) ?? undefined;
+    }
+    if (!report || reportHasNoStats(report)) return failClosed;
     return parseMochaJson(report, artifactsDir);
   }
 }

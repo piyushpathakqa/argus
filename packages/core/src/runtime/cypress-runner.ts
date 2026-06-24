@@ -4,7 +4,12 @@ import { readFile } from 'node:fs/promises';
 import type { TestRunner, TestRunResult } from '../tools/types';
 import { defaultExec } from './exec';
 import type { Exec } from './exec';
-import { parseMochaJson, reportHasNoStats, type MochaReport } from './mocha-json';
+import {
+  parseMochaJson,
+  reportHasNoStats,
+  extractMochaReportFromStdout,
+  type MochaReport,
+} from './mocha-json';
 
 // back-compat aliases (SP2 imported these names from this module):
 export { parseMochaJson as parseCypressJson, extractMochaFailures as extractCypressFailures } from './mocha-json';
@@ -47,23 +52,20 @@ export class CypressTestRunner implements TestRunner {
       ...(specPath ? ['--spec', specPath] : []),
     ];
 
-    await exec('npx', args, { cwd: this.opts.cwd });
+    const { stdout } = await exec('npx', args, { cwd: this.opts.cwd });
 
-    let report: MochaReport;
+    // Prefer the file (when Cypress honours --reporter-options output=…); otherwise fall
+    // back to the JSON Cypress prints to stdout. Fail closed if neither yields real stats.
+    let report: MochaReport | undefined;
     try {
-      const raw = await readReport(reportPath);
-      report = JSON.parse(raw) as MochaReport;
+      report = JSON.parse(await readReport(reportPath)) as MochaReport;
     } catch {
-      return {
-        passed: 0,
-        failed: 1,
-        summary: 'cypress produced no parseable report (treated as failure)',
-        artifactsDir,
-      };
+      report = undefined;
     }
-
-    // Fail-closed: if parsed JSON has no stats, treat as a failure — not 0/0 green.
-    if (reportHasNoStats(report)) {
+    if (!report || reportHasNoStats(report)) {
+      report = extractMochaReportFromStdout(stdout) ?? undefined;
+    }
+    if (!report || reportHasNoStats(report)) {
       return {
         passed: 0,
         failed: 1,
