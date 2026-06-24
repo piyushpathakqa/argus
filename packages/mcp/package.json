@@ -1,6 +1,6 @@
 {
   "name": "vigilis-mcp",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Vigilis MCP server — drive the Vigilis QA tools (generate/triage/heal Playwright, Cypress & Selenium tests) from Claude Desktop/Code over the Model Context Protocol.",
   "type": "module",
   "license": "MIT",
@@ -26,7 +26,10 @@
     "vigilis-mcp": "./dist/index.js",
     "argus-mcp": "./dist/index.js"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "engines": {
     "node": ">=20"
   },
