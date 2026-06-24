@@ -98,8 +98,17 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
     memory = new NoopMemoryProvider(),
   } = opts;
 
-  // Best-effort recall — never throws, never alters branching
-  const priors = await memory.recall({ specPath, url, errorText });
+  // Best-effort recall — must NEVER throw into the run (defense in depth beyond the
+  // provider's own error-swallowing), never alters branching. Drop evidence-less priors
+  // so an empty-rationale verdict label can't anchor the classifier toward drift.
+  let priors: MemoryRecall[] = [];
+  try {
+    priors = (await memory.recall({ specPath, url, errorText })).filter(
+      (p) => typeof p.rationale === 'string' && p.rationale.trim() !== '',
+    );
+  } catch {
+    priors = [];
+  }
 
   const registry = createDefaultRegistry();
   registry.register(reportVerdict);
@@ -139,16 +148,24 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
     observer: composed,
   });
 
-  // Best-effort record — never throws, never alters the returned result
+  // Best-effort record — must NEVER throw (a failing record must not discard a produced
+  // verdict). Only record a complete verdict (guards against malformed report_verdict input
+  // captured pre-validation).
   if (verdict) {
     const v: Verdict = verdict;
-    await memory.record({
-      specPath,
-      url,
-      verdict: v.verdict,
-      rationale: v.rationale,
-      suggestedSelector: v.suggestedSelector,
-    });
+    if (v.verdict && v.rationale) {
+      try {
+        await memory.record({
+          specPath,
+          url,
+          verdict: v.verdict,
+          rationale: v.rationale,
+          suggestedSelector: v.suggestedSelector,
+        });
+      } catch {
+        // swallow — memory is best-effort and must never break triage
+      }
+    }
   }
 
   return { verdict, run };

@@ -1,9 +1,11 @@
 import { defaultExec } from '../runtime/exec';
-import type { Exec } from '../runtime/exec';
+import type { Exec, ExecResult } from '../runtime/exec';
 import type { MemoryProvider, MemoryRecall, MemoryRecordEntry } from './types';
 import { NoopMemoryProvider } from './types';
 
 const VALID_VERDICTS = new Set(['real-bug', 'dom-drift', 'flake']);
+/** A hung `zmem` must never freeze a triage/heal run — bound every call. */
+const ZMEM_TIMEOUT_MS = 8000;
 
 /**
  * MemoryProvider backed by the `zmem` CLI (Zerker's local-first verifiable
@@ -21,7 +23,7 @@ export class ZMemProvider implements MemoryProvider {
 
   async recall(query: { specPath: string; url: string; errorText?: string }): Promise<MemoryRecall[]> {
     try {
-      const { stdout } = await this.exec('zmem', this.recallArgv(query), { cwd: this.cwd });
+      const { stdout } = await this.run(this.recallArgv(query));
       return this.parseRecalls(stdout);
     } catch {
       return [];
@@ -30,13 +32,24 @@ export class ZMemProvider implements MemoryProvider {
 
   async record(entry: MemoryRecordEntry): Promise<void> {
     try {
-      await this.exec('zmem', this.recordArgv(entry), { cwd: this.cwd });
+      await this.run(this.recordArgv(entry));
       // Non-zero exit codes: exec (defaultExec) does NOT throw on non-zero; it
       // resolves with { code: N }. Swallowing errors here covers exec throws only.
       // If exec contract changes to throw on non-zero, this catch still handles it.
     } catch {
       // swallow — a broken zmem must never block a run
     }
+  }
+
+  /** Run `zmem` with the given argv, bounded by a timeout so a hung process can't hang triage. */
+  private run(args: string[]): Promise<ExecResult> {
+    let timer: ReturnType<typeof setTimeout>;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('zmem timed out')), ZMEM_TIMEOUT_MS);
+    });
+    return Promise.race([this.exec('zmem', args, { cwd: this.cwd }), timeout]).finally(() =>
+      clearTimeout(timer),
+    );
   }
 
   // CONFIRM against `zmem --help` before shipping to production.
