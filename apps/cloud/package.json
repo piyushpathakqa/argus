@@ -1,0 +1,25 @@
+{
+  "name": "@argus/cloud",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vigilis governance cloud — org/key store, ingest API, and audit dashboard (TRE-62/64/65).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "next dev -p 3300",
+    "build": "next build",
+    "start": "next start -p 3300",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "typescript": "^5.7.3"
+  }
+}

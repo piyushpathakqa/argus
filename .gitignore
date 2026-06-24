@@ -46,3 +46,8 @@ pnpm-debug.log*
 
 # Next.js build output (all apps)
 **/.next/
+.vigilis-yc-source.html
+
+# Governance cloud local SQLite store
+.data/
+*.db
