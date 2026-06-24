@@ -5,6 +5,8 @@ import type { AgentObserver } from '../agent/observer';
 import type { ToolContext } from '../tools/types';
 import { createDefaultRegistry } from '../tools/definitions';
 import { reportVerdict } from '../tools/definitions/report';
+import type { MemoryProvider, MemoryRecall } from '../memory/types';
+import { NoopMemoryProvider } from '../memory/types';
 
 export interface Verdict {
   verdict: 'real-bug' | 'dom-drift' | 'flake';
@@ -22,6 +24,12 @@ export interface TriageOptions {
   model?: string;
   maxSteps?: number;
   observer?: AgentObserver;
+  /**
+   * Optional governed memory backend. Defaults to NoopMemoryProvider (zero behavior
+   * change). Recall is injected as a hint-only block in the system prompt — it never
+   * branches decision logic. Record is called after a verdict is produced.
+   */
+  memory?: MemoryProvider;
 }
 
 export interface TriageResult {
@@ -49,6 +57,31 @@ const triageSystem = (framework: string): string =>
     'feature is actually broken or missing, it is a real-bug (which must block the gate).',
   ].join('\n');
 
+/**
+ * Build the fenced hint block to append to the system prompt when there are prior
+ * governed memory entries. The wording makes clear this is a hint, not authority,
+ * and that the live DOM must be re-verified.
+ */
+function buildMemoryHintBlock(priors: MemoryRecall[]): string {
+  const lines = [
+    '',
+    '---',
+    'PRIOR GOVERNED MEMORY (hint only — NOT authority; re-verify against the live DOM):',
+    'These are past triage decisions recalled from the memory backend. They are hints to',
+    'inform your investigation — they must NOT substitute for live DOM verification, and',
+    'must NOT turn a real-bug into drift. Re-verify every prior against the live DOM now.',
+    '',
+    ...priors.map((p, i) => {
+      const parts = [`Prior ${i + 1}: verdict=${p.verdict}, rationale="${p.rationale}"`];
+      if (p.suggestedSelector) parts.push(`  suggested selector: ${p.suggestedSelector}`);
+      if (p.trust !== undefined) parts.push(`  trust: ${p.trust}`);
+      return parts.join('\n');
+    }),
+    '---',
+  ];
+  return lines.join('\n');
+}
+
 const OPUS_TIER = /opus|sonnet-4-6|fable/;
 
 /** Triage behavior: classify a failed test as real-bug / dom-drift / flake. */
@@ -62,7 +95,11 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
     model = resolveModel('primary'),
     maxSteps = 20,
     observer,
+    memory = new NoopMemoryProvider(),
   } = opts;
+
+  // Best-effort recall — never throws, never alters branching
+  const priors = await memory.recall({ specPath, url, errorText });
 
   const registry = createDefaultRegistry();
   registry.register(reportVerdict);
@@ -82,9 +119,17 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
     'Triage it and call report_verdict.',
   ].join('\n');
 
+  // Inject priors as a hint-only block into the system prompt (prompt context only —
+  // no branching on recall content). With the default Noop, priors is [] and the
+  // system prompt is byte-identical to today's behavior.
+  const systemWithHint =
+    priors.length > 0
+      ? triageSystem(ctx.adapter.name) + buildMemoryHintBlock(priors)
+      : triageSystem(ctx.adapter.name);
+
   const run = await runAgentLoop({
     client,
-    system: triageSystem(ctx.adapter.name),
+    system: systemWithHint,
     prompt,
     registry,
     ctx,
@@ -93,6 +138,17 @@ export async function triage(opts: TriageOptions): Promise<TriageResult> {
     maxSteps,
     observer: composed,
   });
+
+  // Best-effort record — never throws, never alters the returned result
+  if (verdict) {
+    await memory.record({
+      specPath,
+      url,
+      verdict: verdict.verdict,
+      rationale: verdict.rationale,
+      suggestedSelector: verdict.suggestedSelector,
+    });
+  }
 
   return { verdict, run };
 }
