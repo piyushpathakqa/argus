@@ -25,16 +25,18 @@
 | **Generate** | `vigilis generate …/login --run` | wrote a real spec (testid locators, `cart-count` 0→1 assertion) → **1 passed** | ~$0.03 |
 | **Heal (drift)** | `vigilis heal … --spec <drifted>` | triage = **dom-drift (high)**, rewrote only the locator, re-ran via `test_run` → **green** | ~$0.05 |
 | **Refuse (real bug)** | `vigilis heal … --spec <missing-feature>` | triage = **real-bug (high)**, **refused to heal**, gate stayed blocked, spec untouched | ~$0.05 |
+| **Cypress (live)** | `vigilis generate … --framework cypress --run` | wrote a real `.cy.ts`, ran `cypress run` → **2 passed, 0 failed** | ~$0.04 |
+| **Selenium (live)** | `vigilis generate … --framework selenium --run` | wrote a real selenium-webdriver `.test.ts`, ran mocha+Chrome → **1 passed, 0 failed** | ~$0.03 |
 
-**Bottom line:** the full loop — generate → run → triage → heal-or-refuse — works live, and the "never mask a real bug" guardrail held with a correct, high-confidence classification.
+**Bottom line:** the full loop — generate → run → triage → heal-or-refuse — works live, and **all three frameworks (Playwright, Cypress, Selenium) generate and run green live**. The "never mask a real bug" guardrail held with a correct, high-confidence classification.
 
 ---
 
 ## Part 2 — Know before you demo (honest gaps)
 
-1. **Do NOT run `npm i -D vigilis` live.** The published package is still **0.1.0** (Playwright-only); 0.2.0 (multi-framework) isn't published yet. Demo from the repo: `node packages/cli/dist/index.js …` (or `pnpm --filter vigilis exec vigilis …`). Publish 0.2.0 before showing the install command on screen.
-2. **Don't demo `vigilis author`.** It's a placeholder (`not implemented yet`). The site lists it as a behavior — skip it live; lead with generate/triage/heal.
-3. **Demo on Playwright.** Cypress & Selenium are built + unit-tested but not yet live-verified, and the *exploration* browser is always Playwright/chromium. Say "Cypress and Selenium adapters ship in 0.2.0" — don't run them live yet.
+1. **`npm i -D vigilis` is safe to show** — **v0.2.1** is published with the full multi-framework surface. (It pulls the e2e tools as needed: install `cypress` / `selenium-webdriver mocha tsx` in the target project before running those frameworks.)
+2. **Don't demo `vigilis author`.** It's a placeholder (`not implemented yet`) — labeled "roadmap" on the site. Lead with generate/triage/heal.
+3. **Any framework is fair game.** Playwright, Cypress, and Selenium are all live-verified (generate → run green). Note one true detail if asked: the *exploration* browser is always Playwright/chromium; only the spec it writes + how it runs/heals differ per framework.
 4. **Prereqs:** `ANTHROPIC_API_KEY` set (or in `.env`), chromium installed (`npx playwright install chromium`). Use `--model claude-haiku-4-5` for fast/cheap (~10¢) runs; drop it for Opus quality.
 
 ---

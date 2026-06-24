@@ -112,9 +112,9 @@ vigilis generate https://your-app.com/login --run  # explore → write + run a r
 vigilis generate https://your-app.com/login --framework cypress --run  # force Cypress output
 ```
 
-Playwright is the most battle-tested surface; Cypress and Selenium support is built and unit-tested.
-All three frameworks use the same `generate`/`triage`/`heal` commands — the `--framework` flag
-(or the `framework` field in `vigilis.config.json`) selects the adapter.
+All three frameworks are **live-verified** — each runs the full `generate → run green` loop against
+the sample app (Playwright, Cypress, and Selenium). They share the same `generate`/`triage`/`heal`
+commands — the `--framework` flag (or the `framework` field in `vigilis.config.json`) selects the adapter.
 
 Or point any command at any URL directly; `--base-url` runs generated specs against any host:
 
@@ -124,8 +124,8 @@ node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/lo
 ```
 
 > Generated files are plain specs — copy them into your repo's test folder and own them like any
-> other test. Published on npm: `npm i -D vigilis` (v0.2.0 — Playwright now; Cypress & Selenium
-> adapters built and unit-tested, Playwright is the live-proven surface).
+> other test. Published on npm: `npm i -D vigilis` (v0.2.1 — Playwright, Cypress & Selenium all
+> live-verified: detect → generate → run green).
 
 ### Drive it from Claude Desktop / Code (MCP)
 
