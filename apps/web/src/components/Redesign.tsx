@@ -5,33 +5,34 @@ import { useEffect } from 'react';
 const MARKUP = `
 <nav>
   <div class="nav-in">
-    <a class="mark" href="#top"><span class="b">[</span>VIGILIS<span class="b">]</span></a>
-    <div class="nav-links">
-      <a href="#proof">Proof</a>
-      <a href="#why">Why us</a>
-      <a href="#loop">The loop</a>
-      <a href="#install">Install</a>
+    <a class="mark" data-view="home" href="#home"><span class="b">[</span>VIGILIS<span class="b">]</span></a>
+    <div class="nav-r">
+      <a class="lnk" data-view="home" href="#home">Home</a>
+      <a class="lnk" data-view="how" href="#how">How it works</a>
+      <a class="lnk" href="https://github.com/piyushpathakqa/Vigilis">GitHub</a>
+      <a class="nav-cta" href="#start">Get started</a>
     </div>
-    <a class="nav-cta" href="https://github.com/piyushpathakqa/Vigilis">GitHub &#9656;</a>
   </div>
 </nav>
 
-<header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <span class="kicker"><span class="dot"></span>Open-source &middot; CLI + MCP server &middot; MIT</span>
-      <h1>Self-healing QA<br><span class="l2">that refuses to hide a real bug.</span></h1>
-      <p class="sub">Point it at <b>the Cypress, Selenium, or Playwright suite you already have</b>. It heals the drift and gates every run on <b>signed evidence</b>.</p>
-      <div class="hero-cta">
-        <div class="install">
-          <code><span class="p">$</span> npm i -D vigilis</code>
-          <button class="copy" data-copy="npm i -D vigilis" aria-label="Copy install command">COPY</button>
-        </div>
-        <a class="btn-ghost" href="#proof">Heal vs. refuse &#9656;</a>
-      </div>
+<header class="hero" id="top" data-view="home">
+  <div class="wrap">
+    <div class="badges">
+      <span class="pill"><span class="dot"></span>Open source &middot; MIT</span>
+      <span class="pill">Built by <span class="b">[</span>ZERKER&nbsp;LABS<span class="b">]</span></span>
     </div>
-
-    <div class="hero-visual">
+    <h1>The QA gate for <span class="g">AI-written code.</span></h1>
+    <p class="lede">Coding agents can make CI pass. <b>Vigilis makes sure it should.</b> Point it at the Cypress, Selenium, or Playwright suite you already have: it heals safe drift, blocks real regressions, and signs the proof.</p>
+    <div class="cta-row">
+      <div class="install">
+        <code><span class="p">$</span> npm i -D vigilis</code>
+        <button class="copy" data-copy="npm i -D vigilis" aria-label="Copy install command">COPY</button>
+      </div>
+      <a class="btn-gh" href="https://github.com/piyushpathakqa/Vigilis">&#9733; Star on GitHub</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="product">
       <div class="gate-panel surface framed" id="gatepanel">
         <i class="corner c-tl"></i><i class="corner c-tr"></i><i class="corner c-bl"></i><i class="corner c-br"></i>
         <div class="gp-bar">
@@ -45,180 +46,258 @@ const MARKUP = `
           <span class="gp-deploy" id="gpdeploy">DEPLOY <i class="led"></i></span>
         </div>
       </div>
-      <p class="gp-hint">illustrative &middot; click any cell for its <b>run report</b></p>
+      <div class="float pr" aria-hidden="true">
+        <span class="fl-lbl">Safe drift &middot; PR opened</span>
+        <div class="fl-diff"><span class="del">- getByTestId('login-btn')</span><br><span class="add">+ getByTestId('signin-btn')</span></div>
+      </div>
+      <div class="float rcpt" aria-hidden="true">
+        <span class="fl-lbl">Refusal receipt</span>
+        <div class="fl-h">Spec untouched.<br>Deploy blocked.</div>
+        <p class="fl-p">Expected <b>$49.00</b>, received <b>$0.00</b>. Behaviour changed, not selector drift.</p>
+        <div class="fl-rid">ssn_8f31c0 &middot; offline verifiable</div>
+      </div>
+      <p class="hint">click any cell for its <b>run report</b></p>
     </div>
   </div>
 </header>
 
-<section id="proof">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">01</span> The decision that is the product</span>
-      <h2>Same failure. Two verdicts. The agent picks, and proves which.</h2>
-      <p>Any self-healing tool can turn a build green. The real question is what it did with the failure: rewrite a stale locator, or quietly bury a regression?</p>
-    </div>
+<div class="trust" data-view="home">
+  <div class="trust-in">
+    <span>Works with</span>
+    <span class="fw">Playwright</span><span class="s">/</span><span class="fw">Cypress</span><span class="s">/</span><span class="fw">Selenium</span>
+    <span class="s">&middot;</span><span>runs in your CI</span><span class="s">&middot;</span><span>your own keys</span>
+  </div>
+</div>
 
+<section class="blk" data-view="home">
+  <div class="narrow">
+    <div class="eyebrow reveal">The problem</div>
+    <h2 class="big reveal">Tell any coding agent to make CI pass, and the cheapest path to green is deleting the test that caught the bug.</h2>
+  </div>
+  <div class="wrap">
+    <div class="versus reveal">
+      <div class="vp surface bad">
+        <div class="vp-bar"><div class="who">A general coding agent</div><div class="obj">objective: make CI pass</div></div>
+        <div class="vp-trace">
+<div><span class="p">&gt;</span> "make the checkout test pass"</div>
+<div><span class="p">&middot;</span> expected $49.00, got $0.00</div>
+<div><span class="p">&middot;</span> rewrites assertion to expect <span class="danger">$0.00</span></div>
+<div><span class="p">&middot;</span> CI turns <span class="green">green</span></div>
+        </div>
+        <div class="vp-out"><i class="ic"></i> the $0.00 checkout bug ships</div>
+      </div>
+      <div class="vp surface good">
+        <div class="vp-bar"><div class="who">Vigilis</div><div class="obj">objective: tell the truth</div></div>
+        <div class="vp-trace">
+<div><span class="p">$</span> vigilis heal --spec checkout</div>
+<div><span class="p">&middot;</span> triage: real regression, not drift</div>
+<div><span class="p">&middot;</span> <span class="warn">refuses</span> to touch the spec</div>
+<div><span class="p">&middot;</span> gate fails, <span class="warn">deploy blocked</span></div>
+        </div>
+        <div class="vp-out"><i class="ic"></i> bug caught, refusal sealed</div>
+      </div>
+    </div>
+    <p class="say reveal">Vigilis is the one that refuses. And signs proof of the call.</p>
+  </div>
+</section>
+
+<section class="blk" data-view="home" style="padding-top:0">
+  <div class="narrow">
+    <div class="eyebrow reveal">Watch it happen</div>
+    <h2 class="big reveal">A real run refusing a real bug.</h2>
+  </div>
+  <div class="wrap">
+    <div class="demo surface framed reveal" id="demo">
+      <i class="corner c-tl"></i><i class="corner c-tr"></i><i class="corner c-bl"></i><i class="corner c-br"></i>
+      <div class="demo-bar">
+        <span class="d"></span><span class="d"></span><span class="d"></span>
+        <span class="demo-t">vigilis heal &middot; checkout.spec.ts</span>
+        <span class="demo-state" id="demo-state"></span>
+        <button class="demo-replay" id="demo-replay" aria-label="Replay the run">&#8635; replay</button>
+      </div>
+      <div class="demo-body" id="demo-body"></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" data-view="home">
+  <div class="narrow">
+    <div class="eyebrow reveal">Vigilis vs. the rest</div>
+    <h2 class="big reveal">Everyone else heals to <span class="dim">green</span>. Vigilis heals to <span class="green">true</span>.</h2>
+  </div>
+  <div class="wrap">
+    <div class="cmp reveal">
+      <div class="cmp-row">
+        <div class="cmp-who">DIY coding agents<span class="ex">Claude Code, Codex, Cursor + Playwright MCP</span></div>
+        <div class="cmp-what">Optimize for "make it pass." No refusal, no contract, no proof. They will rewrite the assertion that caught the bug.</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-who">Self-healing platforms<span class="ex">Shiplight, QA Wolf, Autonoma, Mabl, Testim</span></div>
+        <div class="cmp-what">Heal to make builds green, then report real bugs. Masking is mitigated by human review or confidence scores, soft controls on a system grading its own work.</div>
+      </div>
+      <div class="cmp-row win">
+        <div class="cmp-who">Vigilis</div>
+        <div class="cmp-what">Heals the suite you already have. Refuses real regressions as a hard, fail-closed contract. Signs every call into an independent, offline-verifiable receipt.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="start" data-view="home">
+  <div class="wrap">
+    <div class="band surface reveal">
+      <h2>Stop shipping false green.</h2>
+      <p>Drop Vigilis into the suite you already have.</p>
+      <div class="qs">
+        <div class="qs-bar">
+          <span class="d"></span><span class="d"></span><span class="d"></span>
+          <span class="t">quickstart</span>
+          <button class="qs-copy" data-copy="npm i -D vigilis&#10;vigilis init&#10;vigilis generate https://your-app.com --run" aria-label="Copy quickstart commands">COPY</button>
+        </div>
+        <div class="qs-body">
+<div><span class="c">$</span> npm i -D vigilis</div>
+<div><span class="c">$</span> vigilis init</div>
+<div><span class="c">$</span> vigilis generate https://your-app.com --run</div>
+        </div>
+      </div>
+      <p class="reqs">Runs in your CI with your own Anthropic key and chromium. About 10&cent; per run on Haiku, Opus by default. <a href="https://github.com/piyushpathakqa/Vigilis">Read the docs &#9656;</a></p>
+      <div class="cta-row">
+        <a class="btn-gh" href="https://github.com/piyushpathakqa/Vigilis">&#9733; Star on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="how" data-view="how">
+  <div class="narrow">
+    <div class="eyebrow reveal">Receipts, not promises</div>
+    <h2 class="big reveal">Same failure. Three verdicts. The agent picks, and proves which.</h2>
+    <p class="say reveal">Any tool can turn a build green. The question is what it did with the failure: heal safe drift, park a flake, or refuse to bury a real bug.</p>
+  </div>
+  <div class="wrap">
     <div class="fork reveal">
       <div class="triage">
         <div class="lbl">Triage</div>
-        <p>A spec just failed. <b>What kind of failure is it?</b> <span class="mono">&nbsp;bug &middot; drift &middot; flake</span></p>
+        <p>A spec just failed. <b>What kind of failure is it?</b> <span class="m">&nbsp;bug &middot; drift &middot; flake</span></p>
       </div>
       <div class="connector" aria-hidden="true"><i class="stem"></i><i class="bar"></i><i class="dl"></i><i class="dr"></i></div>
       <div class="receipts">
         <div class="rc surface">
-          <div class="rc-top">
-            <span class="verdict v-heal"><span class="ic"></span>Healed</span>
-            <span class="branch">if drift &#9656;</span>
-          </div>
+          <div class="rc-top"><span class="verdict v-heal"><span class="ic"></span>Healed</span><span class="branch">if drift &#9656;</span></div>
           <div class="rc-body">
-            <div class="row"><span class="k">spec</span><span class="v">login.spec.ts &middot; "sign in"</span></div>
-            <div class="row"><span class="k">cause</span><span class="v">locator stale &middot; testid renamed</span></div>
+            <div class="row"><span class="k">cause</span><span class="v">locator stale, testid renamed</span></div>
             <div class="row"><span class="k">change</span><span class="v"><div class="diff"><span class="del">- getByTestId('login-btn')</span><br><span class="add">+ getByTestId('signin-btn')</span></div></span></div>
             <div class="row"><span class="k">verify</span><span class="v ok">re-ran &#8594; 3 passed</span></div>
             <div class="row"><span class="k">result</span><span class="v">fix PR opened for review</span></div>
           </div>
-          <div class="seal"><span class="chk">&#10003;</span> heal sealed into a signed receipt</div>
+          <div class="seal"><span class="chk">&#10003;</span> observed by Vigilis &middot; sealed by Treeship</div>
         </div>
         <div class="rc surface r2">
-          <div class="rc-top">
-            <span class="verdict v-refuse"><span class="ic"></span>Refused to heal</span>
-            <span class="branch">if real bug &#9656;</span>
-          </div>
+          <div class="rc-top"><span class="verdict v-flake"><span class="ic"></span>Quarantined</span><span class="branch">if flake &#9656;</span></div>
           <div class="rc-body">
-            <div class="row"><span class="k">spec</span><span class="v">checkout.spec.ts &middot; "order total"</span></div>
-            <div class="row"><span class="k">cause</span><span class="v bug">behaviour changed, not drift</span></div>
-            <div class="row"><span class="k">assert</span><span class="v">expected <span class="ok">$49.00</span> &middot; got <span class="bug">$0.00</span></span></div>
-            <div class="row"><span class="k">change</span><span class="v">none, spec untouched</span></div>
-            <div class="row"><span class="k">result</span><span class="v bug">QA Gate failed &middot; deploy blocked</span></div>
+            <div class="row"><span class="k">cause</span><span class="v">timing / environment, not code</span></div>
+            <div class="row"><span class="k">action</span><span class="v">flagged, not silently retried</span></div>
+            <div class="row"><span class="k">result</span><span class="v">quarantined for review</span></div>
           </div>
-          <div class="seal"><span class="chk">&#10003;</span> refusal sealed into a signed receipt</div>
+          <div class="seal"><span class="chk">&#10003;</span> observed by Vigilis &middot; sealed by Treeship</div>
+        </div>
+        <div class="rc surface r3">
+          <div class="rc-top"><span class="verdict v-refuse"><span class="ic"></span>Refused to heal</span><span class="branch">if real bug &#9656;</span></div>
+          <div class="rc-body">
+            <div class="row"><span class="k">cause</span><span class="v bug">behaviour changed, not drift</span></div>
+            <div class="row"><span class="k">assert</span><span class="v">expected <span class="ok">$49.00</span>, got <span class="bug">$0.00</span></span></div>
+            <div class="row"><span class="k">change</span><span class="v">none, spec untouched</span></div>
+            <div class="row"><span class="k">result</span><span class="v bug">QA Gate failed, deploy blocked</span></div>
+          </div>
+          <div class="seal"><span class="chk">&#10003;</span> observed by Vigilis &middot; sealed by Treeship</div>
         </div>
       </div>
     </div>
-
-    <p class="seal-note reveal">Sealing is automatic when the <a href="https://www.treeship.dev">Treeship</a> CLI is present. Every heal and every refusal becomes an offline-verifiable receipt, with no hard dependency and <span class="mono">--no-receipt</span> to opt out. <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/TREESHIP.md">How receipts work &#9656;</a></p>
-    <p class="punch reveal">It could have rewritten that assertion and shipped green. It didn't. <b>You get evidence, not a black box.</b></p>
+    <p class="seal-note reveal">Every heal and every refusal becomes an offline-verifiable receipt when the <a href="https://www.treeship.dev">Treeship</a> CLI is present. No hard dependency, <span style="color:var(--dim)">--no-receipt</span> to opt out.</p>
   </div>
 </section>
 
-<section id="why">
+<section class="blk" data-view="how">
+  <div class="narrow">
+    <div class="eyebrow reveal">Why you can trust it</div>
+    <h2 class="big reveal">Whoever writes the code can't be the one who clears it.</h2>
+    <p class="say reveal">Three separate layers. No layer grades its own work. Open each to see the boundary it can't cross.</p>
+  </div>
   <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">02</span> The real question</span>
-      <h2>Why not just tell Claude Code or Codex to fix your tests?</h2>
-      <p>General coding agents are great at writing code with you. As an unattended QA gate they're dangerous, for one reason: ask one to turn a red build green, and the cheapest path to green is to weaken the assertion that caught the bug. They optimize for "make it pass," nothing stops them at a real regression, and they leave no record of the call they made.</p>
+    <div class="powers reveal">
+      <details class="layer actor">
+        <summary>
+          <span class="ly-role">Actor</span>
+          <span class="ly-name">Whatever writes the code &amp; tests</span>
+          <span class="ly-who">dev &middot; Claude Code &middot; Codex &middot; any agent</span>
+          <span class="ly-chev">&#9662;</span>
+        </summary>
+        <div class="ly-detail">
+          <div class="ly-col does"><span class="lbl">Does</span><p>Write code, specs, and fixes. Propose changes.</p></div>
+          <div class="ly-col not"><span class="lbl">Never</span><p>Decide whether its own output is correct, or clear its own build.</p></div>
+        </div>
+      </details>
+      <div class="custody"><span class="cust-line"></span><span class="cust-lbl">observed by &#9662;</span></div>
+      <details class="layer observer" open>
+        <summary>
+          <span class="ly-role">Observer</span>
+          <span class="ly-name">Vigilis verifies the behaviour</span>
+          <span class="ly-who">runs &middot; triages &middot; heals safe drift &middot; refuses real bugs &middot; gates the deploy</span>
+          <span class="ly-chev">&#9662;</span>
+        </summary>
+        <div class="ly-detail">
+          <div class="ly-col does"><span class="lbl">Does</span><p>Judge the actor's output. Heal cosmetic drift, refuse real regressions, block the gate.</p></div>
+          <div class="ly-col not"><span class="lbl">Never</span><p>Edit a spec to force a pass, or vouch for itself. Its verdict is handed on, not self-sealed.</p></div>
+        </div>
+      </details>
+      <div class="custody"><span class="cust-line"></span><span class="cust-lbl">sealed by &#9662;</span></div>
+      <details class="layer notary">
+        <summary>
+          <span class="ly-role">Notary</span>
+          <span class="ly-name">Treeship signs the evidence</span>
+          <span class="ly-who">independent, offline-verifiable receipt for every heal and refusal</span>
+          <span class="ly-chev">&#9662;</span>
+        </summary>
+        <div class="ly-detail">
+          <div class="ly-col does"><span class="lbl">Does</span><p>Seal what Vigilis decided into a tamper-evident receipt anyone can verify.</p></div>
+          <div class="ly-col not"><span class="lbl">Never</span><p>Judge correctness or change a verdict. It proves what happened, nothing more.</p></div>
+        </div>
+      </details>
     </div>
-
-    <div class="versus reveal">
-      <div class="vp surface bad">
-        <div class="vp-bar">
-          <div class="who">A general coding agent</div>
-          <div class="obj">objective: make CI pass</div>
-        </div>
-        <div class="vp-trace">
-<div><span class="p">&gt;</span> "the checkout test is failing, make it pass"</div>
-<div><span class="p">&middot;</span> assertion: expected $49.00, got $0.00</div>
-<div><span class="p">&middot;</span> rewrites the assertion to expect <span class="danger">$0.00</span></div>
-<div><span class="p">&middot;</span> CI turns <span style="color:var(--signal)">green</span></div>
-        </div>
-        <div class="vp-out"><i class="ic"></i> the $0.00 checkout bug ships to prod</div>
-      </div>
-
-      <div class="vp surface good">
-        <div class="vp-bar">
-          <div class="who">Vigilis</div>
-          <div class="obj">objective: tell the truth about the failure</div>
-        </div>
-        <div class="vp-trace">
-<div><span class="p">$</span> vigilis heal --spec checkout</div>
-<div><span class="p">&middot;</span> triage: behavioural regression, not drift</div>
-<div><span class="p">&middot;</span> <span class="warn">refuses</span> to touch the spec</div>
-<div><span class="p">&middot;</span> QA Gate fails, <span class="warn">deploy blocked</span></div>
-        </div>
-        <div class="vp-out"><i class="ic"></i> bug caught before prod, refusal sealed</div>
-      </div>
-    </div>
-
-    <p class="punch reveal">Vigilis is not a smarter test writer. It's the gate that knows <b>when not to act</b>, and signs the proof. You can't get that from a prompt you hope a general agent will honor on every PR, unattended, forever.</p>
-
-    <div class="hired reveal">
-      <div class="h"><b>Rescue</b>Teams buried in a brittle Cypress or Selenium suite that breaks on every cosmetic change, who can't risk a blind auto-fix hiding a real one.</div>
-      <div class="h"><b>Trust</b>Eng and QA leads who want CI automation they can leave running unattended, governed by a hard contract instead of a hopeful prompt.</div>
-      <div class="h"><b>Evidence</b>Regulated teams who need a signed, independent audit trail for anything an agent changes in the test suite.</div>
-    </div>
+    <p class="punch reveal" style="margin-top:34px">Three layers, and no layer grades its own work. <b>That separation is the guarantee, not a bigger model.</b></p>
   </div>
 </section>
 
-<section id="loop">
+<section class="blk" data-view="how">
+  <div class="narrow">
+    <div class="eyebrow reveal">Under the hood</div>
+    <h2 class="big reveal">One core. Four behaviors.</h2>
+  </div>
   <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">03</span> One core &middot; the loop</span>
-      <h2>It generates, triages, and heals &mdash; and proves which.</h2>
-    </div>
     <div class="loop reveal">
-      <div class="step"><div class="n">01</div><h3>Author <span class="dim" style="font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase">&middot; soon</span></h3><p>Plain-English intent in, a structured test plan out. <span class="dim">(on the roadmap)</span></p><div class="out">&#8594; *.plan.json</div></div>
+      <div class="step"><div class="n">01</div><h3>Author <span style="font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)">&middot; soon</span></h3><p>Plain-English intent in, a structured test plan out. <span style="color:var(--faint)">(on the roadmap)</span></p><div class="out">&#8594; *.plan.json</div></div>
       <div class="step"><div class="n">02</div><h3>Generate</h3><p>Explores the app from a URL and writes specs with real assertions.</p><div class="out">&#8594; tests/*.spec.ts</div></div>
       <div class="step"><div class="n">03</div><h3>Triage</h3><p>Classifies every failure: real bug, DOM drift, or flake.</p><div class="out">&#8594; root-cause report</div></div>
       <div class="step"><div class="n">04</div><h3>Heal</h3><p>Rewrites the locator, re-runs to verify green, opens a PR. Refuses real bugs.</p><div class="out">&#8594; pull request</div></div>
     </div>
-    <div class="wrapband reveal">
-      <b>Wrapped by CI:</b> the loop runs as a required <span class="green">QA Gate</span> check in GitHub Actions. <span class="sep">/</span> <b>Wrapped by Treeship:</b> each heal and refusal is sealed into a signed receipt.
-    </div>
+    <div class="wrapband reveal"><b>Wrapped by CI:</b> the loop runs as a required <span class="green">QA Gate</span> check in GitHub Actions. <span class="sep">/</span> <b>Wrapped by Treeship + ZMem:</b> each heal and refusal is sealed into a signed receipt, and prior verdicts are recalled as governed memory.</div>
   </div>
 </section>
 
-<section id="install">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">04</span> Install &middot; 60 seconds</span>
-      <h2>Drop it into the project you already have.</h2>
-    </div>
-    <div class="surface framed reveal" style="margin-top:30px;overflow:hidden">
-      <i class="corner c-tl"></i><i class="corner c-tr"></i><i class="corner c-bl"></i><i class="corner c-br"></i>
-      <div class="gp-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="t">your-project &middot; zsh</span></div>
-      <div class="term-body">
-<div><span class="dim"># install, auto-detects Playwright / Cypress / Selenium</span></div>
-<div style="color:var(--mist)"><span class="p">$</span> npm i -D vigilis</div>
-<div style="color:var(--mist)"><span class="p">$</span> export ANTHROPIC_API_KEY=sk-...</div>
-<div style="color:var(--mist)"><span class="p">$</span> vigilis init</div>
-<br>
-<div><span class="dim"># write a real spec from a URL and run it</span></div>
-<div style="color:var(--mist)"><span class="p">$</span> vigilis generate https://your-app.com/login --run</div>
-<div style="color:var(--faint)">&nbsp;&nbsp;explore &#8594; write &#8594; run &nbsp;<span class="green">3 passed</span></div>
-      </div>
-    </div>
-    <p class="seal-note reveal" style="margin-top:20px">Needs an Anthropic API key and chromium. Defaults to Opus for quality; add <span class="mono">--model claude-haiku-4-5</span> for roughly 10&cent; runs. On npm: <a href="https://www.npmjs.com/package/vigilis">vigilis</a>. Drive it from Claude via the <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/MCP.md">MCP server</a>.</p>
+<div class="cred">
+  <div class="cred-in">
+    Vigilis is built by <span class="b">[</span>ZERKER&nbsp;LABS<span class="b">]</span>, <b>trust infrastructure for AI agents</b>. Its decisions are signed by Treeship and its memory is governed by ZMem, Zerker's attestation and memory primitives. That is why Vigilis can make a fail-closed, signed guarantee the rest of the category can't.
   </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">05</span> Status &middot; honest</span>
-      <h2>The full loop runs as code today.</h2>
-      <p>M0&#8211;M3 complete: generate from a URL, gate in CI, triage a failure, self-heal drift with a PR while refusing real bugs. M4 (MCP polish and demos) in progress.</p>
-    </div>
-    <div class="arch reveal">
-      <div class="node surface app"><div class="lbl">Agent</div><h3>Vigilis</h3><p>Autonomous QA agent. Heals safe drift, opens PRs, fails loudly on real regressions.</p></div>
-      <div class="node surface"><div class="lbl">Primitive &middot; proof</div><h3>Treeship</h3><p>Signed, offline-verifiable receipts for every heal and refusal. Provenance for what the agent did.</p></div>
-      <div class="node surface"><div class="lbl">Primitive &middot; memory</div><h3>ZMem</h3><p>Governed memory: Vigilis recalls prior verdicts as hints, never as authority. Remember responsibly.</p></div>
-      <div class="node surface"><div class="lbl">Lab</div><h3>Zerker Labs</h3><p>Building the primitives and apps for governed agents that take real actions in production.</p></div>
-    </div>
-  </div>
-</section>
+</div>
 
 <footer>
   <div class="wrap">
     <div class="foot-grid">
-      <div>
-        <div class="mark"><span class="b">[</span>VIGILIS<span class="b">]</span></div>
-        <p class="sub" style="font-size:13px;margin-top:13px;max-width:38ch">Self-healing QA you can audit. A receipt, not a black box.</p>
-      </div>
+      <div class="mark"><span class="b">[</span>VIGILIS<span class="b">]</span></div>
       <div class="foot-links">
         <a href="https://github.com/piyushpathakqa/Vigilis">GitHub</a>
         <a href="https://www.npmjs.com/package/vigilis">npm</a>
         <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/MCP.md">MCP</a>
-        <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/DEMO.md">Demo</a>
         <a href="https://github.com/piyushpathakqa/Vigilis/blob/main/docs/TREESHIP.md">Receipts</a>
       </div>
     </div>
@@ -248,23 +327,49 @@ interface Spec {
   diff?: [string, string];
   pr?: number;
 }
+interface DemoStep {
+  k: string;
+  t?: string;
+  work?: number;
+  state?: string;
+}
 
 const NAMES = [
-  'auth/login.spec.ts', 'auth/logout.spec.ts', 'auth/reset-password.spec.ts', 'nav/header.spec.ts',
-  'nav/footer-links.spec.ts', 'search/query.spec.ts', 'search/filters.spec.ts', 'catalog/list.spec.ts',
-  'catalog/detail.spec.ts', 'cart/add-item.spec.ts', 'cart/remove-item.spec.ts', 'cart/quantity.spec.ts',
-  'checkout/address.spec.ts', 'checkout/shipping.spec.ts', 'checkout/order-total.spec.ts', 'checkout/payment.spec.ts',
-  'account/profile.spec.ts', 'account/orders.spec.ts', 'account/addresses.spec.ts', 'settings/notifications.spec.ts',
-  'settings/privacy.spec.ts', 'a11y/contrast.spec.ts', 'a11y/keyboard-nav.spec.ts', 'perf/lcp.spec.ts',
+  'auth/login', 'auth/logout', 'auth/reset', 'nav/header', 'nav/footer', 'search/query', 'search/filter',
+  'catalog/list', 'catalog/detail', 'cart/add', 'cart/remove', 'cart/qty', 'checkout/address', 'checkout/ship',
+  'checkout/total', 'checkout/pay', 'account/profile', 'account/orders', 'account/addr', 'settings/notif',
+  'settings/privacy', 'a11y/contrast', 'a11y/keys', 'perf/lcp', 'i18n/locale', 'email/verify', 'api/health',
+  'upload/file', 'webhook/retry', 'flags/toggle', 'session/expiry', 'export/csv',
+];
+
+const STEPS: DemoStep[] = [
+  { k: 'cmd', t: 'vigilis heal --spec checkout.spec.ts' },
+  { k: 'gap' },
+  { k: 'dim', t: 'running   checkout/order-total.spec.ts', work: 1 },
+  { k: 'red', t: '✗  assertion failed' },
+  { k: 'pad', t: 'expected $49.00     received <span class="r">$0.00</span>' },
+  { k: 'gap' },
+  { k: 'dim', t: 'triage    comparing run against last green', work: 1 },
+  { k: 'amber', t: '→  behaviour changed, not selector drift' },
+  { k: 'gap' },
+  { k: 'amberB', t: 'decision: REFUSE TO HEAL' },
+  { k: 'dim', t: '·  spec left untouched' },
+  { k: 'red', t: '·  QA Gate failed → deploy blocked', state: 'blocked' },
+  { k: 'gap' },
+  { k: 'dim', t: 'sealing   receipt', work: 1 },
+  { k: 'green', t: '✓  sealed · ssn_8f31c0 · observed by Vigilis · sealed by Treeship' },
+  { k: 'gap' },
+  { k: 'greenDim', t: 'done in 3.2s · 0 assertions weakened' },
 ];
 
 export function Redesign() {
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    let interval: ReturnType<typeof setInterval> | undefined;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    let gtimer: ReturnType<typeof setInterval> | undefined;
+    let dTimer: ReturnType<typeof setTimeout> | undefined;
 
     // copy buttons
-    document.querySelectorAll<HTMLButtonElement>('.copy').forEach((b) => {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
       b.addEventListener('click', () => {
         if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy ?? '');
         const o = b.textContent;
@@ -287,44 +392,49 @@ export function Redesign() {
           }
         });
       },
-      { threshold: 0.18 },
+      { threshold: 0.14 },
     );
     document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
     const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+    // ===== gate panel =====
     const grid = document.getElementById('gpgrid');
     const stat = document.getElementById('gpstat');
     const deploy = document.getElementById('gpdeploy');
     const panel = document.getElementById('gatepanel');
-
     let keydownHandler: ((e: KeyboardEvent) => void) | undefined;
 
     if (grid && stat && deploy && panel) {
-      const COLS = 6;
+      let COLS = 8;
       const ROWS = 4;
-      const N = COLS * ROWS;
-      const heal: Record<number, boolean> = { 9: true, 16: true };
-      const bug: Record<number, boolean> = { 14: true };
+      let N = COLS * ROWS;
+      if (window.matchMedia('(max-width:520px)').matches) {
+        COLS = 6;
+        N = COLS * ROWS;
+      }
+      const heal: Record<number, number> = { 11: 1, 22: 1 };
+      const bug: Record<number, number> = { 18: 1 };
       const stateOf = (i: number): SpecState => (bug[i] ? 'bug' : heal[i] ? 'heal' : 'pass');
 
       const specs: Spec[] = [];
       for (let i = 0; i < N; i++) {
         specs.push({
-          name: NAMES[i] || `spec-${i}.ts`,
+          name: (NAMES[i] || `spec-${i}`) + '.spec.ts',
           state: stateOf(i),
           asserts: 2 + (i % 5),
           dur: ((400 + ((i * 137) % 900)) / 1000).toFixed(2) + 's',
         });
       }
-      const s9 = specs[9];
-      if (s9) {
-        s9.diff = ["- getByRole('button', { name: 'Add' })", "+ getByRole('button', { name: 'Add to cart' })"];
-        s9.pr = 128;
+      const s11 = specs[11];
+      if (s11) {
+        s11.diff = ["- getByRole('button', { name: 'Add' })", "+ getByRole('button', { name: 'Add to cart' })"];
+        s11.pr = 128;
       }
-      const s16 = specs[16];
-      if (s16) {
-        s16.diff = ["- getByTestId('save')", "+ getByTestId('save-profile')"];
-        s16.pr = 131;
+      const s22 = specs[22];
+      if (s22) {
+        s22.diff = ["- getByTestId('save')", "+ getByTestId('save-profile')"];
+        s22.pr = 131;
       }
 
       const cells: HTMLDivElement[] = [];
@@ -357,8 +467,10 @@ export function Redesign() {
         }
       };
       const finish = () => {
-        stat.innerHTML =
-          '<b>21 passed</b> &middot; 2 healed &middot; <span style="color:var(--alert)">1 bug held</span>';
+        const nb = Object.keys(bug).length;
+        const nh = Object.keys(heal).length;
+        const np = N - nb - nh;
+        stat.innerHTML = `<b>${np} passed</b> &middot; ${nh} healed &middot; <span style="color:var(--alert)">${nb} bug held</span>`;
         deploy.className = 'gp-deploy blocked';
         deploy.innerHTML = 'DEPLOY BLOCKED <i class="led"></i>';
         panel.classList.add('sealed');
@@ -386,12 +498,12 @@ export function Redesign() {
         grid.classList.add('scanning');
         for (let r = 0; r < ROWS; r++) {
           const rr = r;
-          timers.push(setTimeout(() => resolveRow(rr), 340 + rr * 480));
+          timeouts.push(setTimeout(() => resolveRow(rr), 340 + rr * 480));
         }
-        timers.push(setTimeout(finish, 2400));
+        timeouts.push(setTimeout(finish, 2400));
       };
 
-      // run report modal
+      // run-report modal
       const modal = document.getElementById('modal');
       const mVerdict = document.getElementById('m-verdict');
       const mVtext = document.getElementById('m-vtext');
@@ -399,22 +511,23 @@ export function Redesign() {
       const mBody = document.getElementById('m-body');
       const mSeal = document.getElementById('m-seal');
       const mClose = document.getElementById('m-close');
+      let engaged = false;
+      let lastFocus: HTMLElement | null = null;
+
+      const rid = (i: number) => {
+        const h = (n: number) => ('0000000' + ((n * 2654435761) >>> 0).toString(16)).slice(-7);
+        return 'ssn_' + h(i + 3) + h(i + 11);
+      };
+      const rrows = (a: [string, string, string?][]) =>
+        a
+          .map((r) => `<div class="row"><span class="k">${r[0]}</span><span class="v ${r[2] || ''}">${r[1]}</span></div>`)
+          .join('');
 
       if (modal && mVerdict && mVtext && mSpec && mBody && mSeal && mClose) {
-        let engaged = false;
-        let lastFocus: HTMLElement | null = null;
-        const rid = (i: number) => {
-          const h = (n: number) => ('0000000' + ((n * 2654435761) >>> 0).toString(16)).slice(-7);
-          return 'ssn_' + h(i + 3) + h(i + 11);
-        };
-        const rrows = (a: [string, string, string?][]) =>
-          a
-            .map((r) => `<div class="row"><span class="k">${r[0]}</span><span class="v ${r[2] || ''}">${r[1]}</span></div>`)
-            .join('');
         const openModal = (i: number) => {
           if (!engaged) {
             engaged = true;
-            if (interval) clearInterval(interval);
+            if (gtimer) clearInterval(gtimer);
             ensureResolved();
           }
           const s = specs[i];
@@ -430,31 +543,29 @@ export function Redesign() {
               ['time', s.dur],
               ['flake', 'none detected'],
             ]);
-            mSeal.innerHTML = `<span><span class="chk">&#10003;</span> run sealed into a signed receipt</span><span class="m-rid">${rid(i)}</span>`;
           } else if (s.state === 'heal') {
             v = 'HEALED';
             vc = 'v-heal';
             mBody.innerHTML = rrows([
-              ['cause', 'locator stale &middot; selector renamed'],
+              ['cause', 'locator stale, selector renamed'],
               ['change', `<div class="diff"><span class="del">${s.diff?.[0] ?? ''}</span><br><span class="add">${s.diff?.[1] ?? ''}</span></div>`],
-              ['verify', 're-ran &#8594; passed', 'ok'],
+              ['verify', 're-ran, passed', 'ok'],
               ['result', `fix PR #${s.pr} opened`],
             ]);
-            mSeal.innerHTML = `<span><span class="chk">&#10003;</span> heal sealed into a signed receipt</span><span class="m-rid">${rid(i)}</span>`;
           } else {
-            v = 'BUG HELD &middot; REFUSED';
+            v = 'BUG HELD';
             vc = 'v-bug';
             mBody.innerHTML = rrows([
               ['cause', 'behaviour changed, not drift', 'bug'],
-              ['assert', 'expected <span class="ok">$49.00</span> &middot; got <span class="bug">$0.00</span>'],
+              ['assert', 'expected <span class="ok">$49.00</span>, got <span class="bug">$0.00</span>'],
               ['change', 'none, spec untouched'],
-              ['result', 'QA Gate failed &middot; deploy blocked', 'bug'],
+              ['result', 'gate failed, deploy blocked', 'bug'],
             ]);
-            mSeal.innerHTML = `<span><span class="chk">&#10003;</span> refusal sealed into a signed receipt</span><span class="m-rid">${rid(i)}</span>`;
           }
           mVerdict.className = 'm-verdict ' + vc;
           mVtext.innerHTML = v;
           mSpec.textContent = s.name;
+          mSeal.innerHTML = `<span><span class="chk">&#10003;</span> observed by Vigilis &middot; sealed by Treeship</span><span class="m-rid">${rid(i)}</span>`;
           lastFocus = document.activeElement as HTMLElement | null;
           modal.classList.add('open');
           modal.setAttribute('aria-hidden', 'false');
@@ -474,8 +585,7 @@ export function Redesign() {
         };
         document.addEventListener('keydown', keydownHandler);
         grid.addEventListener('click', (e) => {
-          const t = e.target as Element | null;
-          const c = t?.closest?.('.cell') as HTMLDivElement | null;
+          const c = (e.target as Element | null)?.closest?.('.cell') as HTMLDivElement | null;
           if (!c) return;
           const i = cells.indexOf(c);
           if (i < 0 || !clickable(c)) return;
@@ -483,8 +593,7 @@ export function Redesign() {
         });
         grid.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
-          const t = e.target as Element | null;
-          const c = t?.closest?.('.cell') as HTMLDivElement | null;
+          const c = (e.target as Element | null)?.closest?.('.cell') as HTMLDivElement | null;
           if (!c) return;
           const i = cells.indexOf(c);
           if (i < 0 || !clickable(c)) return;
@@ -493,19 +602,158 @@ export function Redesign() {
         });
       }
 
-      if (reduce) {
-        ensureResolved();
-      } else {
+      if (reduce) ensureResolved();
+      else {
         play();
-        interval = setInterval(play, 6800);
+        gtimer = setInterval(play, 6800);
       }
     }
 
+    // ===== animated heal-run demo =====
+    const dBody = document.getElementById('demo-body');
+    const dState = document.getElementById('demo-state');
+    const dReplay = document.getElementById('demo-replay');
+    const demoEl = document.getElementById('demo');
+    let dObs: IntersectionObserver | undefined;
+
+    const dSetState = (s: string) => {
+      if (!dState) return;
+      if (s === 'live') {
+        dState.className = 'demo-state live';
+        dState.innerHTML = '<span class="ic"></span>running';
+      } else if (s === 'blocked') {
+        dState.className = 'demo-state blocked';
+        dState.innerHTML = '<span class="ic"></span>deploy blocked';
+      } else {
+        dState.className = 'demo-state';
+        dState.innerHTML = '';
+      }
+    };
+    const dEndCursor = () => {
+      if (!dBody) return;
+      const c = document.createElement('div');
+      c.className = 'ln cmd';
+      c.innerHTML = '<span class="p">$</span> <span class="cur"></span>';
+      dBody.appendChild(c);
+    };
+    const dRenderAll = () => {
+      if (!dBody) return;
+      dBody.innerHTML = '';
+      STEPS.forEach((s) => {
+        const d = document.createElement('div');
+        d.className = 'ln';
+        if (s.k === 'gap') d.innerHTML = '&nbsp;';
+        else if (s.k === 'cmd') {
+          d.className = 'ln cmd';
+          d.innerHTML = '<span class="p">$</span> ' + (s.t ?? '');
+        } else {
+          d.className = 'ln ' + s.k;
+          d.innerHTML = s.t ?? '';
+        }
+        dBody.appendChild(d);
+      });
+      dSetState('blocked');
+      dEndCursor();
+    };
+    const dPlay = () => {
+      if (!dBody) return;
+      if (dTimer) clearTimeout(dTimer);
+      dBody.innerHTML = '';
+      dSetState('live');
+      let i = 0;
+      const step = () => {
+        if (i >= STEPS.length) {
+          dSetState('blocked');
+          dEndCursor();
+          return;
+        }
+        const s = STEPS[i++];
+        if (!s) return;
+        const d = document.createElement('div');
+        d.className = 'ln';
+        if (s.k === 'cmd') {
+          d.className = 'ln cmd';
+          dBody.appendChild(d);
+          const full = '$ ' + (s.t ?? '');
+          let j = 0;
+          const type = () => {
+            if (j <= full.length) {
+              d.innerHTML = full.slice(0, j).replace(/^\$/, '<span class="p">$</span>') + '<span class="cur"></span>';
+              j++;
+              dTimer = setTimeout(type, 26);
+            } else {
+              d.innerHTML = full.replace(/^\$/, '<span class="p">$</span>');
+              dTimer = setTimeout(step, 360);
+            }
+          };
+          type();
+          return;
+        }
+        if (s.k === 'gap') d.innerHTML = '&nbsp;';
+        else {
+          d.className = 'ln ' + s.k;
+          d.innerHTML = (s.t ?? '') + (s.work ? '<span class="wk"> …</span>' : '');
+        }
+        dBody.appendChild(d);
+        if (s.state) dSetState(s.state);
+        dTimer = setTimeout(step, s.work ? 780 : s.k === 'gap' ? 120 : 250);
+      };
+      step();
+    };
+    if (dReplay) dReplay.addEventListener('click', dPlay);
+    if (reduce) {
+      dRenderAll();
+    } else if (dBody && demoEl) {
+      let dPlayed = false;
+      dObs = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting && !dPlayed) {
+              dPlayed = true;
+              dPlay();
+              dObs?.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.45 },
+      );
+      dObs.observe(demoEl);
+    }
+
+    // ===== view routing =====
+    const route = () => {
+      const hash = (location.hash || '').replace('#', '');
+      const v = hash.indexOf('how') > -1 ? 'how' : 'home';
+      document.querySelectorAll<HTMLElement>('[data-view]').forEach((el) => {
+        const t = el.tagName;
+        if (t === 'SECTION' || t === 'HEADER' || el.classList.contains('trust')) {
+          el.style.display = el.getAttribute('data-view') === v ? '' : 'none';
+        }
+      });
+      document.querySelectorAll('.nav-r a[data-view]').forEach((a) => {
+        a.classList.toggle('active', a.getAttribute('data-view') === v);
+      });
+      document.querySelectorAll(`[data-view="${v}"] .reveal`).forEach((el) => el.classList.add('in'));
+      if (v === 'home' && hash && hash !== 'home') {
+        const tgt = document.getElementById(hash);
+        if (tgt) {
+          tgt.scrollIntoView();
+          return;
+        }
+      }
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('hashchange', route);
+    route();
+
     return () => {
-      timers.forEach(clearTimeout);
-      if (interval) clearInterval(interval);
-      if (keydownHandler) document.removeEventListener('keydown', keydownHandler);
+      timeouts.forEach(clearTimeout);
+      if (gtimer) clearInterval(gtimer);
+      if (dTimer) clearTimeout(dTimer);
       io.disconnect();
+      dObs?.disconnect();
+      window.removeEventListener('hashchange', route);
+      if (keydownHandler) document.removeEventListener('keydown', keydownHandler);
     };
   }, []);
 
