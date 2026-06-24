@@ -200,7 +200,8 @@ const MARKUP = `
     </div>
     <div class="arch reveal">
       <div class="node surface app"><div class="lbl">App</div><h3>Vigilis</h3><p>Autonomous QA. Heals safe drift, opens PRs, fails loudly on real regressions.</p></div>
-      <div class="node surface"><div class="lbl">Primitive</div><h3>Treeship</h3><p>The signed, offline-verifiable receipts each heal runs on. Provenance for agent actions.</p></div>
+      <div class="node surface"><div class="lbl">Primitive &middot; proof</div><h3>Treeship</h3><p>Signed, offline-verifiable receipts for every heal and refusal. Provenance for what the agent did.</p></div>
+      <div class="node surface"><div class="lbl">Primitive &middot; memory</div><h3>ZMem</h3><p>Governed memory: Vigilis recalls prior verdicts as hints, never as authority. Remember responsibly.</p></div>
       <div class="node surface"><div class="lbl">Lab</div><h3>Zerker Labs</h3><p>Building the primitives and apps for governed agents that take real actions in production.</p></div>
     </div>
   </div>
