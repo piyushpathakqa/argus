@@ -1,12 +1,14 @@
 /**
- * Dev/local audit dashboard (TRE-65, minimal). Server component.
- * Reads receipts directly from node:sqlite, so it must run on the Node runtime
- * and never at build time (force-dynamic).
+ * Audit dashboard (TRE-65 + TRE-63). Server component, Node runtime.
+ * Requires a session and scopes receipts to the signed-in user's org.
+ * Reads node:sqlite directly, so it must never run at build time (force-dynamic).
  */
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { devOrgId, listReceipts, type ReceiptRow } from '@/db';
+import { redirect } from 'next/navigation';
+import { auth, signOut } from '@/auth';
+import { getOrg, getReceiptsForOrg, type ReceiptRow } from '@/db';
 
 const VERDICTS = ['real-bug', 'dom-drift', 'flake'];
 
@@ -24,11 +26,15 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ repo?: string; verdict?: string }>;
 }) {
+  const session = await auth();
+  if (!session?.orgId) redirect('/signin');
+
   const sp = await searchParams;
   const repo = sp.repo?.trim() || undefined;
   const verdict = sp.verdict?.trim() || undefined;
 
-  const rows: ReceiptRow[] = listReceipts(devOrgId(), { repo, verdict });
+  const org = getOrg(session.orgId);
+  const rows: ReceiptRow[] = getReceiptsForOrg(session.orgId, { repo, verdict });
 
   return (
     <main className="wrap">
@@ -36,12 +42,33 @@ export default async function DashboardPage({
         <div className="mark">
           VIGILIS<span className="b">·</span>CLOUD
         </div>
-        <h1>Audit dashboard</h1>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <h1>Audit dashboard</h1>
+          <div className="mono dim" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span>{org?.name ?? session.orgId}</span>
+            <a href="/keys">API keys</a>
+            <form
+              action={async () => {
+                'use server';
+                await signOut({ redirectTo: '/signin' });
+              }}
+            >
+              <button type="submit">Sign out</button>
+            </form>
+          </div>
+        </div>
         <p>
-          Local/dev governance cloud. Heal and refusal receipts reported by a configured agent
-          (<span className="mono">VIGILIS_CLOUD_KEY</span>) for the seeded <strong>Acme Dev</strong> org.
-          Attestation is verifiable and auditable — it records what happened, not whether the
-          agent&apos;s judgment was correct.
+          Heal and refusal receipts reported by a configured agent for your org. Attestation is
+          verifiable and auditable — it records what happened, not whether the agent&apos;s judgment
+          was correct.
         </p>
       </header>
 
@@ -72,7 +99,8 @@ export default async function DashboardPage({
       {rows.length === 0 ? (
         <div className="empty">
           No receipts yet. Point an agent at this cloud with{' '}
-          <code>VIGILIS_CLOUD_URL=http://localhost:3300 VIGILIS_CLOUD_KEY=vigilis_dev_key</code>.
+          <code>VIGILIS_CLOUD_URL=http://localhost:3300 VIGILIS_CLOUD_KEY=&lt;your org key&gt;</code>.
+          Create one on the <a href="/keys">API keys</a> page.
         </div>
       ) : (
         <table>
