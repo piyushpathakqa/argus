@@ -1,6 +1,6 @@
 # 👁️ Vigilis — Agentic QA Framework
 
-> An agentic QA framework that **authors, generates, triages, and self-heals** Playwright,
+> An agentic QA framework that **generates, triages, and self-heals** Playwright,
 > Cypress, and Selenium tests for any web app — usable from Claude Code/Desktop as an **MCP server**
 > or from CI as a **CLI** — with the whole loop running as a deployment gate in **GitHub Actions**.
 > Framework is **auto-detected**; pass `--framework playwright|cypress|selenium` to force one.
@@ -43,11 +43,13 @@ Vigilis defines its QA tools **once** and exposes them **twice**.
               └─────────────────┘         └──────────────────┘
 ```
 
-## The loop: four behaviors
+## The loop
+
+Three behaviors run today; **Author** is on the roadmap.
 
 | Stage | Input | The agent… | Output |
 |-------|-------|------------|--------|
-| **Author** | Plain-English intent | compiles intent into a structured test plan | `*.plan.json` |
+| **Author** _(roadmap)_ | Plain-English intent | compiles intent into a structured test plan | `*.plan.json` |
 | **Generate** | A URL | explores the app, writes specs with assertions | `tests/*.spec.ts` |
 | **Triage** | A failed run | classifies real bug vs DOM drift vs flake | root-cause report |
 | **Heal** | A drift verdict | rewrites the locator, verifies green, opens a PR | a pull request |
@@ -121,8 +123,9 @@ node --env-file=.env packages/cli/dist/index.js generate https://your-app.com/lo
   --run --base-url https://your-app.com
 ```
 
-> Generated files are plain Playwright specs — copy them into your repo's test folder and own
-> them like any other test. (An `npm install`-able `argus` package is on the roadmap.)
+> Generated files are plain specs — copy them into your repo's test folder and own them like any
+> other test. Published on npm: `npm i -D vigilis` (v0.2.0 — Playwright now; Cypress & Selenium
+> adapters built and unit-tested, Playwright is the live-proven surface).
 
 ### Drive it from Claude Desktop / Code (MCP)
 

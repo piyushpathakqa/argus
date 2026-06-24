@@ -45,7 +45,7 @@ const MARKUP = `
           <span class="gp-deploy" id="gpdeploy">DEPLOY <i class="led"></i></span>
         </div>
       </div>
-      <p class="gp-hint">click any cell for its <b>run report</b></p>
+      <p class="gp-hint">illustrative &middot; click any cell for its <b>run report</b></p>
     </div>
   </div>
 </header>
@@ -152,11 +152,11 @@ const MARKUP = `
 <section id="loop">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="eyebrow"><span class="ix">03</span> One core &middot; four behaviors</span>
-      <h2>It authors, generates, triages, and heals.</h2>
+      <span class="eyebrow"><span class="ix">03</span> One core &middot; the loop</span>
+      <h2>It generates, triages, and heals &mdash; and proves which.</h2>
     </div>
     <div class="loop reveal">
-      <div class="step"><div class="n">01</div><h3>Author</h3><p>Plain-English intent in, a structured test plan out.</p><div class="out">&#8594; *.plan.json</div></div>
+      <div class="step"><div class="n">01</div><h3>Author <span class="dim" style="font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase">&middot; soon</span></h3><p>Plain-English intent in, a structured test plan out. <span class="dim">(on the roadmap)</span></p><div class="out">&#8594; *.plan.json</div></div>
       <div class="step"><div class="n">02</div><h3>Generate</h3><p>Explores the app from a URL and writes specs with real assertions.</p><div class="out">&#8594; tests/*.spec.ts</div></div>
       <div class="step"><div class="n">03</div><h3>Triage</h3><p>Classifies every failure: real bug, DOM drift, or flake.</p><div class="out">&#8594; root-cause report</div></div>
       <div class="step"><div class="n">04</div><h3>Heal</h3><p>Rewrites the locator, re-runs to verify green, opens a PR. Refuses real bugs.</p><div class="out">&#8594; pull request</div></div>
