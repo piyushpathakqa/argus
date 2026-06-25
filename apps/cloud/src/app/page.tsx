@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/auth';
-import { getOrg, getReceiptsForOrg, type ReceiptRow } from '@/db';
+import { getOrg, getReceiptsForOrg, getEntitlements, type ReceiptRow } from '@/db';
 
 const VERDICTS = ['real-bug', 'dom-drift', 'flake'];
 
@@ -44,6 +44,7 @@ export default async function DashboardPage({
   const hasFilters = Boolean(repo || verdict || spec || dateFrom || dateTo);
 
   const org = getOrg(session.orgId);
+  const ent = getEntitlements(session.orgId);
   const rows: ReceiptRow[] = getReceiptsForOrg(session.orgId, {
     repo,
     verdict,
@@ -187,6 +188,22 @@ export default async function DashboardPage({
           </tbody>
         </table>
       )}
+
+      <p className="retention dim">
+        {ent.retentionDays === null ? (
+          <>Unlimited retention on the {ent.label} plan.</>
+        ) : (
+          <>
+            {ent.label} retains {ent.retentionDays} days of history — older receipts roll off.
+            {!ent.exportEnabled || ent.retentionDays < 365 ? (
+              <>
+                {' '}
+                <a href="/pricing">Upgrade</a> for longer retention and compliance export.
+              </>
+            ) : null}
+          </>
+        )}
+      </p>
     </main>
   );
 }

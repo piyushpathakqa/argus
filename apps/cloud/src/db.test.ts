@@ -257,3 +257,43 @@ describe('entitlements wrappers (TRE-68)', () => {
     expect(distinctReposForOrg(orgId)).toBe(2);
   });
 });
+
+describe('retention prune (TRE-69)', () => {
+  const NOW = Date.parse('2026-06-25T00:00:00.000Z');
+  const daysAgo = (n: number) => new Date(NOW - n * 86_400_000).toISOString();
+
+  it('prunes free receipts past 14d, keeps team within 1y, never prunes enterprise', async () => {
+    const { ensureUserAndOrg, applyPlan, insertReceipt, getReceiptsForOrg, pruneExpiredReceipts } =
+      await db();
+
+    const free = ensureUserAndOrg({ email: 'kent@example.com', name: 'Kent' }); // default free
+    const team = ensureUserAndOrg({ email: 'lana@example.com', name: 'Lana' });
+    const ent = ensureUserAndOrg({ email: 'mona@example.com', name: 'Mona' });
+    applyPlan(team.orgId, 'team');
+    applyPlan(ent.orgId, 'enterprise');
+
+    insertReceipt(free.orgId, receipt({ receiptId: 'f_old', timestamp: daysAgo(20) }));
+    insertReceipt(free.orgId, receipt({ receiptId: 'f_new', timestamp: daysAgo(5) }));
+    insertReceipt(team.orgId, receipt({ receiptId: 't_100d', timestamp: daysAgo(100) }));
+    insertReceipt(team.orgId, receipt({ receiptId: 't_400d', timestamp: daysAgo(400) }));
+    insertReceipt(ent.orgId, receipt({ receiptId: 'e_old', timestamp: daysAgo(1000) }));
+
+    const result = pruneExpiredReceipts(NOW);
+    expect(result.receiptsPruned).toBe(2); // free 20d + team 400d
+    expect(result.orgsPruned).toBe(2);
+
+    const freeRows = getReceiptsForOrg(free.orgId).map((r) => r.receipt_id);
+    expect(freeRows).toContain('f_new');
+    expect(freeRows).not.toContain('f_old');
+
+    const teamRows = getReceiptsForOrg(team.orgId).map((r) => r.receipt_id);
+    expect(teamRows).toContain('t_100d');
+    expect(teamRows).not.toContain('t_400d');
+
+    // enterprise retains everything, however old.
+    expect(getReceiptsForOrg(ent.orgId).map((r) => r.receipt_id)).toContain('e_old');
+
+    // Idempotent: a second run prunes nothing new.
+    expect(pruneExpiredReceipts(NOW).receiptsPruned).toBe(0);
+  });
+});

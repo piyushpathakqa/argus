@@ -242,3 +242,8 @@ tbody tr:hover {
     gap: 4px;
   }
 }
+
+.retention {
+  margin-top: 18px;
+  font-size: 12px;
+}

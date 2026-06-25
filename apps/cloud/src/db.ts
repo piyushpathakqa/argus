@@ -395,6 +395,45 @@ export function applyPlan(orgId: string, plan: Plan): void {
   db.prepare(`UPDATE org SET plan = ? WHERE id = ?`).run(normalizePlan(plan), orgId);
 }
 
+// ---------------------------------------------------------------------------
+// Retention (TRE-69) — prune receipts past each org's plan window.
+// ---------------------------------------------------------------------------
+
+export interface PruneResult {
+  orgsPruned: number;
+  receiptsPruned: number;
+}
+
+/**
+ * Delete receipts older than each org's retention window (Free 14d / Team 1y /
+ * Enterprise unlimited). Orgs on an unlimited-retention plan are skipped.
+ * Idempotent and safe to run on a schedule (TRE-69's cron route calls this).
+ * `now` is injectable so tests are deterministic.
+ */
+export function pruneExpiredReceipts(now: number = Date.now()): PruneResult {
+  const db = getDb();
+  const orgs = db.prepare(`SELECT id, plan FROM org`).all() as Array<{
+    id: string;
+    plan: string;
+  }>;
+  let orgsPruned = 0;
+  let receiptsPruned = 0;
+  for (const org of orgs) {
+    const { retentionDays } = entitlementsForPlan(org.plan);
+    if (retentionDays === null) continue; // unlimited — never prune
+    const cutoff = new Date(now - retentionDays * 86_400_000).toISOString();
+    const res = db
+      .prepare(`DELETE FROM receipt WHERE org_id = ? AND created_at < ?`)
+      .run(org.id, cutoff) as { changes?: number | bigint };
+    const n = Number(res.changes ?? 0);
+    if (n > 0) {
+      orgsPruned++;
+      receiptsPruned += n;
+    }
+  }
+  return { orgsPruned, receiptsPruned };
+}
+
 /** The seeded dev org id (kept for backward-compat / the ingest dev key). */
 export function devOrgId(): string {
   return DEV_ORG_ID;
