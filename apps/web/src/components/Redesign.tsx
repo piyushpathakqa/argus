@@ -179,12 +179,12 @@ const MARKUP = `
 
 <section class="blk" data-view="home">
   <div class="narrow">
-    <div class="eyebrow reveal in">After the refusal</div>
-    <h2 class="big reveal in">The refusal goes where your team already works.</h2>
-    <p class="say reveal in">A real-bug refusal can page Slack and open a Linear ticket &mdash; each linking the signed receipt. Heals and flakes stay silent; only a held regression interrupts anyone.</p>
+    <div class="eyebrow reveal">After the refusal</div>
+    <h2 class="big reveal">The refusal goes where your team already works.</h2>
+    <p class="say reveal">A real-bug refusal can page Slack and open a Linear ticket &mdash; each linking the signed receipt. Heals and flakes stay silent; only a held regression interrupts anyone.</p>
   </div>
   <div class="wrap">
-    <div class="rcpair reveal in">
+    <div class="rcpair reveal">
       <div class="rc surface">
         <div class="rc-top"><span class="verdict v-refuse"><span class="ic"></span>Slack alert</span><span class="branch">#qa-alerts</span></div>
         <div class="rc-body">
@@ -204,8 +204,8 @@ const MARKUP = `
         <div class="seal"><span class="chk">&#10003;</span> deduplicated &middot; receipt attached &middot; auditable</div>
       </div>
     </div>
-    <div class="wrapband reveal in"><b>Optional, off by default.</b> A no-op until you set <span style="color:var(--dim)">SLACK_WEBHOOK_URL</span> <span class="sep">/</span> <span style="color:var(--dim)">LINEAR_API_KEY</span> &mdash; nothing leaves your CI without your keys.</div>
-    <p class="seal-note reveal in">A refusal flags a <b style="color:var(--mist)">suspected</b> real regression, not a confirmed bug. The receipt is verifiable and auditable &mdash; it proves the agent refused and what it saw, not that the judgement was correct. Every alert and ticket links that signed receipt, so a human can verify before they act.</p>
+    <div class="wrapband reveal"><b>Optional, off by default.</b> A no-op until you set <span style="color:var(--dim)">SLACK_WEBHOOK_URL</span> <span class="sep">/</span> <span style="color:var(--dim)">LINEAR_API_KEY</span> &mdash; nothing leaves your CI without your keys.</div>
+    <p class="seal-note reveal">A refusal flags a <b style="color:var(--mist)">suspected</b> real regression, not a confirmed bug. The receipt is verifiable and auditable &mdash; it proves the agent refused and what it saw, not that the judgement was correct. Every alert and ticket links that signed receipt, so a human can verify before they act.</p>
   </div>
 </section>
 
@@ -793,7 +793,10 @@ export function Redesign() {
       document.querySelectorAll<HTMLElement>('[data-view]').forEach((el) => {
         const t = el.tagName;
         if (t === 'SECTION' || t === 'HEADER' || el.classList.contains('trust')) {
-          el.style.display = el.getAttribute('data-view') === v ? '' : 'none';
+          // Use an explicit 'block' (not '') for the active view: how-view sections
+          // are hidden by a CSS rule (section[data-view="how"]{display:none}), and an
+          // empty inline value falls back to that rule, leaving the How tab blank.
+          el.style.display = el.getAttribute('data-view') === v ? 'block' : 'none';
         }
       });
       document.querySelectorAll('.nav-r a[data-view]').forEach((a) => {
