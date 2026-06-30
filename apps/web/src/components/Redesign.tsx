@@ -177,6 +177,38 @@ const MARKUP = `
   </div>
 </section>
 
+<section class="blk" data-view="home">
+  <div class="narrow">
+    <div class="eyebrow reveal in">After the refusal</div>
+    <h2 class="big reveal in">The refusal goes where your team already works.</h2>
+    <p class="say reveal in">A real-bug refusal can page Slack and open a Linear ticket &mdash; each linking the signed receipt. Heals and flakes stay silent; only a held regression interrupts anyone.</p>
+  </div>
+  <div class="wrap">
+    <div class="rcpair reveal in">
+      <div class="rc surface">
+        <div class="rc-top"><span class="verdict v-refuse"><span class="ic"></span>Slack alert</span><span class="branch">#qa-alerts</span></div>
+        <div class="rc-body">
+          <div class="row"><span class="k">fires</span><span class="v">on a real-bug refusal only &mdash; never on heals or flakes</span></div>
+          <div class="row"><span class="k">posts</span><span class="v">checkout-total.spec.ts &mdash; expected <span class="ok">$49.00</span>, got <span class="bug">$0.00</span></span></div>
+          <div class="row"><span class="k">links</span><span class="v ok">signed receipt &middot; ssn_8f31c0</span></div>
+        </div>
+        <div class="seal"><span class="chk">&#10003;</span> suspected regression &middot; receipt attached &middot; offline verifiable</div>
+      </div>
+      <div class="rc surface r2">
+        <div class="rc-top"><span class="verdict v-refuse"><span class="ic"></span>Linear ticket</span><span class="branch">auto-filed</span></div>
+        <div class="rc-body">
+          <div class="row"><span class="k">opens</span><span class="v">one issue for the held regression</span></div>
+          <div class="row"><span class="k">links</span><span class="v ok">signed receipt in the issue body</span></div>
+          <div class="row"><span class="k">dedup</span><span class="v">CI re-runs reuse the same ticket &mdash; no spam</span></div>
+        </div>
+        <div class="seal"><span class="chk">&#10003;</span> deduplicated &middot; receipt attached &middot; auditable</div>
+      </div>
+    </div>
+    <div class="wrapband reveal in"><b>Optional, off by default.</b> A no-op until you set <span style="color:var(--dim)">SLACK_WEBHOOK_URL</span> <span class="sep">/</span> <span style="color:var(--dim)">LINEAR_API_KEY</span> &mdash; nothing leaves your CI without your keys.</div>
+    <p class="seal-note reveal in">A refusal flags a <b style="color:var(--mist)">suspected</b> real regression, not a confirmed bug. The receipt is verifiable and auditable &mdash; it proves the agent refused and what it saw, not that the judgement was correct. Every alert and ticket links that signed receipt, so a human can verify before they act.</p>
+  </div>
+</section>
+
 <section class="blk" id="start" data-view="home">
   <div class="wrap">
     <div class="band surface reveal">
