@@ -395,6 +395,12 @@ export function applyPlan(orgId: string, plan: Plan): void {
   db.prepare(`UPDATE org SET plan = ? WHERE id = ?`).run(normalizePlan(plan), orgId);
 }
 
+/** Rename an org. Demo/admin helper; no-op if the org id is unknown. */
+export function renameOrg(orgId: string, name: string): void {
+  const db = getDb();
+  db.prepare(`UPDATE org SET name = ? WHERE id = ?`).run(name, orgId);
+}
+
 // ---------------------------------------------------------------------------
 // Retention (TRE-69) — prune receipts past each org's plan window.
 // ---------------------------------------------------------------------------

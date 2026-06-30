@@ -144,6 +144,15 @@ describe('auth + multi-tenant (TRE-63)', () => {
     expect(findOrgByApiKey(plaintext)).toBeNull();
   });
 
+  it('renameOrg updates an org name and is a no-op for unknown ids', async () => {
+    const { ensureUserAndOrg, renameOrg, getOrg } = await db();
+    const { orgId } = ensureUserAndOrg({ email: 'rename@vigilis.local', name: 'Rename Me' });
+    renameOrg(orgId, 'Acme Inc');
+    expect(getOrg(orgId)?.name).toBe('Acme Inc');
+    // Unknown id: must not throw.
+    expect(() => renameOrg('org_does_not_exist', 'Nope')).not.toThrow();
+  });
+
   it('getReceiptsForOrg scopes by org and filters by repo/verdict', async () => {
     const { ensureUserAndOrg, createApiKey, insertReceipt, getReceiptsForOrg } = await db();
     const a = ensureUserAndOrg({ email: 'carol@example.com', name: 'Carol' });
