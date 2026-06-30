@@ -19,7 +19,7 @@ const MARKUP = `
   <div class="wrap">
     <div class="badges">
       <span class="pill"><span class="dot"></span>Open source &middot; MIT</span>
-      <span class="pill">Built by <span class="b">[</span>ZERKER&nbsp;LABS<span class="b">]</span></span>
+      <span class="pill">Built by Piyush&nbsp;Pathak</span>
     </div>
     <h1>The QA gate for <span class="g">AI-written code.</span></h1>
     <p class="lede">Coding agents can make CI pass. <b>Vigilis makes sure it should.</b> Point it at the Cypress, Selenium, or Playwright suite you already have: it heals safe drift, blocks real regressions, and signs the proof.</p>
@@ -140,6 +140,40 @@ const MARKUP = `
         <div class="cmp-what">Heals the suite you already have. Refuses real regressions as a hard, fail-closed contract. Signs every call into an independent, offline-verifiable receipt.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="blk" data-view="home">
+  <div class="narrow">
+    <div class="eyebrow reveal">What a verdict looks like</div>
+    <h2 class="big reveal">Two failures. Two very different receipts.</h2>
+    <p class="say reveal">The same agent meets a cosmetic change and a real bug. It heals one, refuses the other &mdash; and signs proof of which.</p>
+  </div>
+  <div class="wrap">
+    <div class="rcpair reveal">
+      <div class="rc surface">
+        <div class="rc-top"><span class="verdict v-heal"><span class="ic"></span>Healed &middot; safe drift</span><span class="branch">acme/web</span></div>
+        <div class="rc-body">
+          <div class="row"><span class="k">test</span><span class="v">login.spec.ts</span></div>
+          <div class="row"><span class="k">cause</span><span class="v">button id renamed, same button, same label</span></div>
+          <div class="row"><span class="k">change</span><span class="v"><div class="diff"><span class="del">- #login</span><br><span class="add">+ #signin</span></div></span></div>
+          <div class="row"><span class="k">result</span><span class="v ok">re-ran &#8594; green, fix PR opened</span></div>
+        </div>
+        <div class="seal"><span class="chk">&#10003;</span> signed &middot; chain intact &middot; suite stays green</div>
+      </div>
+      <div class="rc surface r2">
+        <div class="rc-top"><span class="verdict v-refuse"><span class="ic"></span>Refused &middot; real bug</span><span class="branch">acme/checkout</span></div>
+        <div class="rc-body">
+          <div class="row"><span class="k">test</span><span class="v">checkout-total.spec.ts</span></div>
+          <div class="row"><span class="k">cause</span><span class="v bug">behaviour changed, not selector drift</span></div>
+          <div class="row"><span class="k">assert</span><span class="v">expected <span class="ok">$49.00</span>, got <span class="bug">$0.00</span></span></div>
+          <div class="row"><span class="k">result</span><span class="v bug">spec untouched, deploy blocked</span></div>
+        </div>
+        <div class="seal"><span class="chk">&#10003;</span> signed &middot; chain intact &middot; bug surfaced</div>
+      </div>
+    </div>
+    <p class="punch reveal">A dashboard you can edit isn't evidence. Every verdict is sealed by an <b>independent notary</b> into a tamper-evident receipt &mdash; so &ldquo;the agent refused a real bug&rdquo; is something you can <b>prove to an auditor</b>, not just claim.</p>
+    <p class="seal-note reveal">Why everyone shipping AI-written code needs this: the moment an agent can change code with no human watching, &ldquo;trust me&rdquo; stops being enough. You need a signed record of what it decided &mdash; from a notary that can't quietly rewrite it. <span style="color:var(--dim)">Verifiable and auditable: it proves what happened, not that the judgment was correct.</span></p>
   </div>
 </section>
 
@@ -286,7 +320,7 @@ const MARKUP = `
 
 <div class="cred">
   <div class="cred-in">
-    Vigilis is built by <span class="b">[</span>ZERKER&nbsp;LABS<span class="b">]</span>, <b>trust infrastructure for AI agents</b>. Its decisions are signed by Treeship and its memory is governed by ZMem, Zerker's attestation and memory primitives. That is why Vigilis can make a fail-closed, signed guarantee the rest of the category can't.
+    Vigilis is built by <b>Piyush&nbsp;Pathak</b>. It consumes <b>Treeship</b> for independent attestation and <b>ZMem</b> for governed memory &mdash; external primitives Vigilis doesn't own or control. Because the notary that signs every verdict is independent, Vigilis can make a fail-closed, signed guarantee the rest of the category can't.
   </div>
 </div>
 

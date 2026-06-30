@@ -339,3 +339,10 @@ footer{border-top:1px solid var(--hair);padding:42px 0 54px}
 .pr-foot{max-width:64ch;margin:56px auto 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.6}
 .pr-foot b{color:var(--dim)}
 @media(max-width:860px){.pr-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+
+/* two-receipt comparison (home view) */
+.rcpair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+.rcpair .rc{opacity:0;transform:translateY(13px);transition:opacity .5s ease,transform .5s ease}
+.rcpair.in .rc{opacity:1;transform:none}
+.rcpair.in .rc.r2{transition-delay:.12s}
+@media(max-width:820px){.rcpair{grid-template-columns:1fr}}
