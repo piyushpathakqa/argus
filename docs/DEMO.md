@@ -45,7 +45,7 @@ Three repos, all three verdicts, two genuine bugs the agent **refused to hide**.
 **1. The audit trail (trust).**
 On the dashboard, point at the verdict tags.
 > "Every row is a signed receipt. The agent healed the cosmetic drifts — but
-> here [open `checkout-total.spec`] it found the order total was wrong and
+> here [open `tests/checkout-total.spec.ts`] it found the order total was wrong and
 > **refused to heal**. It failed loudly instead of greening a real bug. That
 > refusal is itself attested — you can audit *why* it made the call."
 
@@ -53,8 +53,8 @@ Open the `real-bug` receipt to show the rationale.
 
 **2. The wall (why Free converts).**
 > "Acme runs three repos. On Free they get one, 14 days of history, and no
-> export." Point at the nudge ("protecting 3 repos; Free covers 1") and the
-> locked **Export (Team)** link.
+> export." Point at the nudge ("protecting 3 repos; the Free plan covers 1") and
+> the locked **Export (Team) ↗** link.
 
 **3. The upgrade (the sellable moment).**
 Click **team** in the demo control.
