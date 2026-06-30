@@ -16,6 +16,7 @@ export async function setPlanAction(plan: Plan): Promise<void> {
   if (!devBypassEnabled()) return;
   const session = await auth();
   if (!session?.orgId) return;
+  // applyPlan/seedDemo are synchronous (node:sqlite is a sync API), so no await.
   applyPlan(session.orgId, plan);
   revalidatePath('/');
 }
