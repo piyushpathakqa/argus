@@ -7,12 +7,7 @@
  * fully unit-testable and can be invoked in-process from a server action — no
  * standalone runner needed. node:sqlite ⇒ Node runtime only.
  */
-import {
-  renameOrg,
-  applyPlan,
-  insertReceipt,
-  type CloudReceipt,
-} from '@/db';
+import { renameOrg, applyPlan, insertReceipt, type CloudReceipt } from '@/db';
 
 const ORG_NAME = 'Acme Inc';
 
@@ -39,7 +34,8 @@ function demoReceipts(now: number): SeedReceipt[] {
       verdict: 'dom-drift',
       healed: true,
       suggestedSelector: 'getByRole("button", { name: "Sign in" })',
-      rationale: 'Login button id changed (#login → #signin); same role/label. Cosmetic drift — healed.',
+      rationale:
+        'Login button id changed (#login → #signin); same role/label. Cosmetic drift — healed.',
       timestamp: at(1),
     },
     {
@@ -50,7 +46,8 @@ function demoReceipts(now: number): SeedReceipt[] {
       url: 'https://acme.example/',
       verdict: 'flake',
       healed: false,
-      rationale: 'Assertion passed on retry without any DOM change — flaky timing. Quarantined, not healed.',
+      rationale:
+        'Assertion passed on retry without any DOM change — flaky timing. Quarantined, not healed.',
       timestamp: at(3),
     },
     {
